@@ -8,22 +8,32 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
   const [error, setError] = useState('');
   const [selectedPreset, setSelectedPreset] = useState(null);
 
+  // Determine if this filter represents a currency field
+  const isCurrencyField = label.toLowerCase().includes('revenue') ||
+    label.toLowerCase().includes('profit') ||
+    label.toLowerCase().includes('price');
+
   // Ensure that min, max, and value are valid before rendering
   if (min === undefined || max === undefined || !Array.isArray(value) || value.length !== 2) {
     console.error('Invalid props provided to RangeFilter:', { min, max, value });
-    return null; // or return an error message
+    return null;
   }
 
   const handleInputChange = (index) => (e) => {
-    const newValue = e.target.value === '' ? '' : Number(e.target.value);
+    const inputValue = e.target.value.trim() === '' ? '' : Number(e.target.value);
     const updatedValue = [...value];
-    updatedValue[index] = newValue;
+    updatedValue[index] = inputValue;
     validateAndUpdate(updatedValue);
     setSelectedPreset(null);
   };
 
   const validateAndUpdate = (newValue) => {
     const [newMin, newMax] = newValue;
+    if (typeof newMin !== 'number' || typeof newMax !== 'number' || isNaN(newMin) || isNaN(newMax)) {
+      setError('Please enter valid numeric values');
+      return;
+    }
+
     if (newMin > newMax) {
       setError('Min value cannot be greater than max value');
     } else if (newMin < min || newMax > max) {
@@ -65,6 +75,20 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
     setSelectedPreset(matchingPresetIndex !== -1 ? matchingPresetIndex : null);
   }, [value, presets]);
 
+  // A helper component for the currency input fields
+  const CurrencyInput = ({ val, onChangeHandler, ariaLabel }) => (
+    <div className="flex items-center space-x-1">
+      {isCurrencyField && <span className="text-gray-700">$</span>}
+      <Input
+        type="number"
+        value={val}
+        onChange={onChangeHandler}
+        className="w-24"
+        aria-label={ariaLabel}
+      />
+    </div>
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -95,20 +119,16 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
         />
       </SliderPrimitive.Root>
       <div className="flex items-center space-x-4">
-        <Input
-          type="number"
-          value={value[0]}
-          onChange={handleInputChange(0)}
-          className="w-24"
-          aria-label={`Minimum ${label}`}
+        <CurrencyInput
+          val={value[0]}
+          onChangeHandler={handleInputChange(0)}
+          ariaLabel={`Minimum ${label}`}
         />
         <span className="text-gray-500">to</span>
-        <Input
-          type="number"
-          value={value[1]}
-          onChange={handleInputChange(1)}
-          className="w-24"
-          aria-label={`Maximum ${label}`}
+        <CurrencyInput
+          val={value[1]}
+          onChangeHandler={handleInputChange(1)}
+          ariaLabel={`Maximum ${label}`}
         />
       </div>
       {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
@@ -118,11 +138,10 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
             key={index}
             size="sm"
             onClick={() => handlePresetClick(preset.min, preset.max, index)}
-            className={`transition-colors ${
-              selectedPreset === index
+            className={`transition-colors ${selectedPreset === index
                 ? "bg-blue-500 text-white hover:bg-blue-600"
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
-            }`}
+              }`}
           >
             {preset.label}
           </Button>

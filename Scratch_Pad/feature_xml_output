@@ -1,0 +1,144 @@
+    <business_requirements>
+        <non_technical_requirements>
+            <user_story>
+                <description>As an investor, I want to easily compare key metrics of multiple businesses side-by-side so that I can quickly identify the most attractive opportunities without navigating back and forth.</description>
+                <acceptance_criteria>
+                    <criterion>Given I am viewing a table of businesses, when I click "Compare" on a business row, then that business is added to a comparison panel at the top of the page.</criterion>
+                    <criterion>Given that I have selected multiple businesses, when the comparison panel is visible, then the metrics (TTM Revenue, TTM Profit, Asking Price, Price-to-Revenue, Price-to-Profit) are displayed side-by-side.</criterion>
+                    <criterion>Given multiple businesses in the comparison, the best metric values should be visually highlighted.</criterion>
+                    <criterion>Given the comparison panel is visible, when I click a remove button on a particular business, that business is removed from the panel and the highlight recalculates.</criterion>
+                </acceptance_criteria>
+            </user_story>
+            <business_rules>
+                <rule>At least one business selection is required to display the comparison panel.</rule>
+                <rule>Consider limiting the number of businesses to compare (e.g., max 4).</rule>
+                <rule>Must support keyboard navigation and accessibility standards.</rule>
+                <rule>Must maintain responsive design for desktop, tablet, and mobile screens.</rule>
+            </business_rules>
+        </non_technical_requirements>
+    </business_requirements>
+
+    <technical_requirements>
+        <react_implementation>
+            <component_structure>
+                <component name="BusinessTable">
+                    <description>Renders the list of businesses and their "Compare" buttons.</description>
+                </component>
+                <component name="ComparisonBar">
+                    <description>Fixed/sticky component at the top that displays selected businesses side-by-side.</description>
+                </component>
+                <component name="ComparisonCard">
+                    <description>A child component of ComparisonBar representing each selected business's data.</description>
+                </component>
+                <component name="HighlightMetrics">
+                    <description>Utility/helper function (hook or standalone) to determine best metrics.</description>
+                </component>
+            </component_structure>
+            
+            <state_management>
+                <approach>Use useState or useReducer in a top-level component to track selected business IDs and their data.</approach>
+                <optimization>Consider using useMemo to compute standout metrics once the list of selected businesses changes.</optimization>
+            </state_management>
+            
+            <required_hooks>
+                <hook>useState for managing selected businesses.</hook>
+                <hook>useMemo for calculating and memoizing best metric values.</hook>
+                <hook>useEffect (if needed) for fetching updated business data.</hook>
+                <hook>useCallback for handling selection and removal actions efficiently.</hook>
+            </required_hooks>
+            
+            <props_interface>
+                <component name="BusinessTable">
+                    <prop>businesses: Business[]</prop>
+                    <prop>onCompareSelect: (id: string) => void</prop>
+                </component>
+                <component name="ComparisonBar">
+                    <prop>selectedBusinesses: Business[]</prop>
+                    <prop>onRemove: (id: string) => void</prop>
+                </component>
+                <component name="ComparisonCard">
+                    <prop>business: Business</prop>
+                    <prop>isBestMetric: (metricName: string) => boolean</prop>
+                    <prop>onRemove: () => void</prop>
+                </component>
+            </props_interface>
+        </react_implementation>
+
+        <tailwind_specifications>
+            <layout_classes>
+                <class name="comparison_bar">fixed top-0 w-full bg-white shadow-md flex overflow-x-auto</class>
+                <class name="cards_in_bar">flex flex-col p-4 border-r border-gray-200</class>
+            </layout_classes>
+            <responsive_design>
+                <class>overflow-x-auto for smaller screens</class>
+                <breakpoints>Use sm:, md:, lg: breakpoints to adjust font-size and padding.</breakpoints>
+            </responsive_design>
+            <custom_styling>
+                <style name="best_metric">font-bold text-green-600</style>
+                <style name="standard_metrics">text-gray-700</style>
+                <style name="compare_button">text-blue-600 hover:underline</style>
+                <style name="remove_button">text-red-500 hover:text-red-700 focus:outline-none</style>
+            </custom_styling>
+        </tailwind_specifications>
+
+        <api_requirements>
+            <requirement>No new endpoints required if data is already available.</requirement>
+            <requirement>Must have unique identifiers and numeric values for all required metrics.</requirement>
+            <requirement>If data updates in real-time, handle re-rendering gracefully.</requirement>
+        </api_requirements>
+
+        <performance_requirements>
+            <requirement>Minimize re-renders by memoizing computed standout metrics.</requirement>
+            <requirement>Virtualize large tables if performance issues arise.</requirement>
+        </performance_requirements>
+    </technical_requirements>
+
+    <validation>
+        <test_scenarios>
+            <scenario>
+                <name>Scenario 1</name>
+                <description>Add a single business using "Compare" and verify comparison bar appears with correct data.</description>
+            </scenario>
+            <scenario>
+                <name>Scenario 2</name>
+                <description>Add multiple businesses and verify side-by-side comparison with correct alignment.</description>
+            </scenario>
+            <scenario>
+                <name>Scenario 3</name>
+                <description>Remove a business from comparison and verify the metrics and highlighting update correctly.</description>
+            </scenario>
+            <scenario>
+                <name>Scenario 4</name>
+                <description>Verify that highlighting is assigned to the best metrics.</description>
+            </scenario>
+            <scenario>
+                <name>Scenario 5</name>
+                <description>Check keyboard navigation (Tab through "Compare" buttons and remove actions).</description>
+            </scenario>
+        </test_scenarios>
+
+        <edge_cases>
+            <case>
+                <name>No Businesses Selected</name>
+                <handling>Comparison bar should not appear.</handling>
+            </case>
+            <case>
+                <name>Max Businesses Reached</name>
+                <handling>Attempts to add another business could either replace the oldest selection or block addition.</handling>
+            </case>
+            <case>
+                <name>Data Missing Metrics</name>
+                <handling>Display a placeholder or a "N/A" indicator.</handling>
+            </case>
+            <case>
+                <name>Large Numbers</name>
+                <handling>Metrics formatting should handle large values gracefully.</handling>
+            </case>
+        </edge_cases>
+
+        <performance_metrics>
+            <metric>Interaction response should be under 200ms for visible UI updates.</metric>
+            <metric>Rendering should remain smooth under typical data sizes.</metric>
+        </performance_metrics>
+    </validation>
+</feature_specification>

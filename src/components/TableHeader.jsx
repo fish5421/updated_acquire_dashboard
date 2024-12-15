@@ -32,7 +32,7 @@ const TableHeader = ({ sortConfig, onSort }) => {
 
   return (
     <div className="flex border-b bg-white sticky top-0 z-10">
-      <HeaderCell label="Business Type" sortKey="Business Type" tooltip="Type of business" />
+      <HeaderCell label="Type" sortKey="Business Type" tooltip="Type of business" />
       <HeaderCell label="TTM Revenue" sortKey="TTM Revenue" tooltip="Trailing Twelve Months Revenue" />
       <HeaderCell label="TTM Profit" sortKey="TTM Profit" tooltip="Trailing Twelve Months Profit" />
       <HeaderCell label="Asking Price" sortKey="Asking Price" tooltip="Requested selling price" />

@@ -1,108 +1,140 @@
-import React, { createContext, useState, useMemo, useCallback, useEffect } from 'react';
+import React, { createContext, useState, useCallback, useMemo, useEffect } from 'react';
 
-const DashboardContext = createContext();
+/**
+ * DashboardContext provides global state for the dashboard and file management.
+ * 
+ * Changes made:
+ * - Removed single selectedFileId; replaced with selectedFileIds (array).
+ * - Data now aggregates from all selected files.
+ * - Added isLoadingData to handle loading states when selection changes.
+ * - Updated logic in useEffect to handle multiple file selections.
+ */
 
-const defaultFilters = {
-  revenue: [0, 10000000],
-  profit: [0, 10000000],
-  price: [0, 100000000],
-  businessType: 'all'
-};
+export const DashboardContext = createContext();
 
-const defaultFilterRanges = {
-  revenue: [0, 10000000],
-  profit: [0, 10000000],
-  price: [0, 100000000],
-};
+export const DashboardProvider = ({ children }) => {
+  const [files, setFiles] = useState([]);
+  const [selectedFileIds, setSelectedFileIds] = useState([]);
 
-const DashboardProvider = ({ children }) => {
-  const [filters, setFilters] = useState(defaultFilters);
-  const [filterRanges, setFilterRanges] = useState(defaultFilterRanges);
-  const [data, setData] = useState([]);
-  const [hasUploadedData, setHasUploadedData] = useState(false);
-  const [businessTypes, setBusinessTypes] = useState(['all']);
+  // Filters and ranges
+  const [filters, setFilters] = useState({
+    revenue: [0, 0],
+    profit: [0, 0],
+    price: [0, 0],
+    businessType: 'all',
+  });
 
-  useEffect(() => {
-    console.log('DashboardContext state updated:', {
-      filters,
-      filterRanges,
-      dataLength: data.length,
-      hasUploadedData,
-      businessTypes
+  const [filterRanges, setFilterRanges] = useState({
+    revenue: [0, 0],
+    profit: [0, 0],
+    price: [0, 0],
+  });
+
+  const [isLoadingData, setIsLoadingData] = useState(false);
+
+  const updateFilterRanges = useCallback((data) => {
+    if (!data || data.length === 0) return;
+
+    const getNumeric = (item, key) => Number(item[key]) || 0;
+
+    const minRevenue = Math.min(...data.map(d => getNumeric(d, 'TTM Revenue')));
+    const maxRevenue = Math.max(...data.map(d => getNumeric(d, 'TTM Revenue')));
+    const minProfit = Math.min(...data.map(d => getNumeric(d, 'TTM Profit')));
+    const maxProfit = Math.max(...data.map(d => getNumeric(d, 'TTM Profit')));
+    const minPrice = Math.min(...data.map(d => getNumeric(d, 'Asking Price')));
+    const maxPrice = Math.max(...data.map(d => getNumeric(d, 'Asking Price')));
+
+    setFilterRanges({
+      revenue: [minRevenue, maxRevenue],
+      profit: [minProfit, maxProfit],
+      price: [minPrice, maxPrice]
     });
-  }, [filters, filterRanges, data, hasUploadedData, businessTypes]);
 
-  const updateFilterRanges = useCallback((newData) => {
-    if (newData.length === 0) {
-      setFilterRanges(defaultFilterRanges);
-      setFilters(defaultFilters);
-      setBusinessTypes(['all']);
-    } else {
-      const newRanges = {
-        revenue: [
-          Math.min(...newData.map(item => item['TTM Revenue'])),
-          Math.max(...newData.map(item => item['TTM Revenue']))
-        ],
-        profit: [
-          Math.min(...newData.map(item => item['TTM Profit'])),
-          Math.max(...newData.map(item => item['TTM Profit']))
-        ],
-        price: [
-          Math.min(...newData.map(item => item['Asking Price'])),
-          Math.max(...newData.map(item => item['Asking Price']))
-        ],
-      };
-      setFilterRanges(newRanges);
-      setFilters(prevFilters => ({
-        ...prevFilters,
-        revenue: newRanges.revenue,
-        profit: newRanges.profit,
-        price: newRanges.price,
-      }));
-
-      // Update business types
-      const uniqueBusinessTypes = ['all', ...new Set(newData.map(item => item['Business Type']))];
-      setBusinessTypes(uniqueBusinessTypes);
-    }
+    // Reset filters to full range if needed (if initial upload)
+    setFilters(prevFilters => {
+      const updated = { ...prevFilters };
+      if (prevFilters.revenue[0] === 0 && prevFilters.revenue[1] === 0) {
+        updated.revenue = [minRevenue, maxRevenue];
+      }
+      if (prevFilters.profit[0] === 0 && prevFilters.profit[1] === 0) {
+        updated.profit = [minProfit, maxProfit];
+      }
+      if (prevFilters.price[0] === 0 && prevFilters.price[1] === 0) {
+        updated.price = [minPrice, maxPrice];
+      }
+      return updated;
+    });
   }, []);
 
-  const removeListingFromData = useCallback((id) => {
-    setData(prevData => {
-      const newData = prevData.filter(item => item.id !== id);
-      updateFilterRanges(newData);
-      setHasUploadedData(newData.length > 0);
-      return newData;
+  // Derive selected files
+  const selectedFiles = useMemo(() => {
+    return files.filter(file => selectedFileIds.includes(file.id));
+  }, [files, selectedFileIds]);
+
+  // Aggregated data from all selected files
+  const data = useMemo(() => {
+    if (selectedFiles.length === 0) return [];
+    return selectedFiles.reduce((acc, file) => {
+      if (file.data && Array.isArray(file.data)) {
+        return acc.concat(file.data);
+      }
+      return acc;
+    }, []);
+  }, [selectedFiles]);
+
+  const hasUploadedData = files.length > 0;
+
+  // Derive business types
+  const businessTypes = useMemo(() => {
+    if (!hasUploadedData || data.length === 0) return ['all'];
+    const types = new Set();
+    data.forEach(item => {
+      if (item['Business Type']) {
+        types.add(item['Business Type']);
+      }
     });
-  }, [updateFilterRanges]);
+    return ['all', ...Array.from(types)];
+  }, [data, hasUploadedData]);
 
-  const setDataAndUpdateUploadStatus = useCallback((newData) => {
-    // Add a unique id to each item if it doesn't already have one
-    const dataWithIds = newData.map((item, index) => ({
-      ...item,
-      id: item.id || `item-${index}`
-    }));
-    setData(dataWithIds);
-    setHasUploadedData(dataWithIds.length > 0);
-    updateFilterRanges(dataWithIds);
-  }, [updateFilterRanges]);
+  // Handle updates when selected files change
+  useEffect(() => {
+    if (selectedFileIds.length === 0) {
+      // No files selected, reset filters to defaults
+      setFilters({
+        revenue: [0, 0],
+        profit: [0, 0],
+        price: [0, 0],
+        businessType: 'all',
+      });
+      return;
+    }
 
-  const value = useMemo(() => ({
-    filters,
-    setFilters,
-    filterRanges,
-    updateFilterRanges,
-    data,
-    setData: setDataAndUpdateUploadStatus,
-    removeListingFromData,
-    hasUploadedData,
-    businessTypes,
-  }), [filters, filterRanges, data, removeListingFromData, updateFilterRanges, hasUploadedData, setDataAndUpdateUploadStatus, businessTypes]);
+    setIsLoadingData(true);
+    // Simulate async update if needed. Here we just update immediately.
+    Promise.resolve().then(() => {
+      updateFilterRanges(data);
+      setIsLoadingData(false);
+    });
+  }, [selectedFileIds, data, updateFilterRanges]);
 
   return (
-    <DashboardContext.Provider value={value}>
+    <DashboardContext.Provider
+      value={{
+        files,
+        setFiles,
+        selectedFileIds,
+        setSelectedFileIds,
+        data,
+        filters,
+        setFilters,
+        filterRanges,
+        updateFilterRanges,
+        hasUploadedData,
+        businessTypes,
+        isLoadingData
+      }}
+    >
       {children}
     </DashboardContext.Provider>
   );
 };
-
-export { DashboardContext, DashboardProvider };
