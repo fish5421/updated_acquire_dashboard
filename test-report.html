@@ -1,0 +1,3535 @@
+<html><head><meta charset="utf-8"/><title>Test Report</title><style type="text/css">html,
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+body {
+  padding: 2rem 1rem;
+  font-size: 0.85rem;
+}
+.jesthtml-content {
+  margin: 0 auto;
+  max-width: 70rem;
+}
+header {
+  display: flex;
+  align-items: center;
+}
+#title {
+  margin: 0;
+  flex-grow: 1;
+}
+#logo {
+  height: 4rem;
+}
+#timestamp {
+  color: #777;
+  margin-top: 0.5rem;
+}
+
+/** SUMMARY */
+#summary {
+  color: #333;
+  margin: 2rem 0;
+  display: flex;
+  font-family: monospace;
+  font-size: 1rem;
+}
+#summary > div {
+  margin-right: 2rem;
+  background: #eee;
+  padding: 1rem;
+  min-width: 15rem;
+}
+#summary > div:last-child {
+  margin-right: 0;
+}
+@media only screen and (max-width: 720px) {
+  #summary {
+    flex-direction: column;
+  }
+  #summary > div {
+    margin-right: 0;
+    margin-top: 2rem;
+  }
+  #summary > div:first-child {
+    margin-top: 0;
+  }
+}
+
+.summary-total {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+.summary-passed {
+  color: #4f8a10;
+  border-left: 0.4rem solid #4f8a10;
+  padding-left: 0.5rem;
+}
+.summary-failed,
+.summary-obsolete-snapshots {
+  color: #d8000c;
+  border-left: 0.4rem solid #d8000c;
+  padding-left: 0.5rem;
+}
+.summary-pending {
+  color: #9f6000;
+  border-left: 0.4rem solid #9f6000;
+  padding-left: 0.5rem;
+}
+.summary-empty {
+  color: #999;
+  border-left: 0.4rem solid #999;
+}
+
+.test-result {
+  padding: 1rem;
+  margin-bottom: 0.25rem;
+}
+.test-result:last-child {
+  border: 0;
+}
+.test-result.passed {
+  background-color: #dff2bf;
+  color: #4f8a10;
+}
+.test-result.failed {
+  background-color: #ffbaba;
+  color: #d8000c;
+}
+.test-result.pending {
+  background-color: #ffdf61;
+  color: #9f6000;
+}
+
+.test-info {
+  display: flex;
+  justify-content: space-between;
+}
+.test-suitename {
+  width: 20%;
+  text-align: left;
+  font-weight: bold;
+  word-break: break-word;
+}
+.test-title {
+  width: 40%;
+  text-align: left;
+  font-style: italic;
+}
+.test-status {
+  width: 20%;
+  text-align: right;
+}
+.test-duration {
+  width: 10%;
+  text-align: right;
+  font-size: 0.75rem;
+}
+
+.failureMessages {
+  padding: 0 1rem;
+  margin-top: 1rem;
+  border-top: 1px dashed #d8000c;
+}
+.failureMessages.suiteFailure {
+  border-top: none;
+}
+.failureMsg {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+.suite-container {
+  margin-bottom: 2rem;
+}
+.suite-container > input[type="checkbox"] {
+  position: absolute;
+  left: -100vw;
+}
+.suite-container label {
+  display: block;
+}
+.suite-container .suite-tests {
+  overflow-y: hidden;
+  height: 0;
+}
+.suite-container > input[type="checkbox"]:checked ~ .suite-tests {
+  height: auto;
+  overflow: visible;
+}
+.suite-info {
+  padding: 1rem;
+  background-color: #eee;
+  color: #777;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+.suite-info:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
+.suite-info .suite-path {
+  word-break: break-all;
+  flex-grow: 1;
+  font-family: monospace;
+  font-size: 1rem;
+}
+.suite-info .suite-time {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.75rem;
+}
+.suite-info .suite-time.warn {
+  background-color: #d8000c;
+  color: #fff;
+}
+.suite-info:before {
+  content: "\2303";
+  display: inline-block;
+  margin-right: 0.5rem;
+  transform: rotate(0deg);
+}
+.suite-container > input[type="checkbox"]:checked ~ label .suite-info:before {
+  transform: rotate(180deg);
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: #efefef;
+}
+.suite-consolelog-header {
+  font-weight: bold;
+}
+.suite-consolelog-item {
+  padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-consolelog-item-origin {
+  color: #777;
+  font-weight: bold;
+}
+.suite-consolelog-item-message {
+  color: #000;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+/* OBSOLETE SNAPSHOTS */
+.suite-obsolete-snapshots {
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  background-color: #ffbaba;
+  color: #d8000c;
+}
+.suite-obsolete-snapshots-header {
+  font-weight: bold;
+}
+.suite-obsolete-snapshots-item {
+  padding: 0.5rem;
+}
+.suite-obsolete-snapshots-item pre {
+  margin: 0.5rem 0;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+.suite-obsolete-snapshots-item-message {
+  color: #000;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+</style></head><body><div class="jesthtml-content"><header><h1 id="title">Test Report</h1></header><div id="metadata-container"><div id="timestamp">Started: 2024-10-14 17:25:14</div><div id="summary"><div id="suite-summary"><div class="summary-total">Suites (17)</div><div class="summary-passed ">6 passed</div><div class="summary-failed ">11 failed</div><div class="summary-pending  summary-empty">0 pending</div></div><div id="test-summary"><div class="summary-total">Tests (60)</div><div class="summary-passed ">34 passed</div><div class="summary-failed ">26 failed</div><div class="summary-pending  summary-empty">0 pending</div></div></div></div><div id="suite-1" class="suite-container"><input id="collapsible-0" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-0"><div class="suite-info"><div class="suite-path">/home/project/src/__tests__/UserWorkflow.test.jsx</div><div class="suite-time warn">8.453s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">User Workflow Integration</div><div class="test-title">Complete user workflow: Upload file, navigate to dashboard, apply filters, and analyze data</div><div class="test-status">failed</div><div class="test-duration">5.016s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/UserWorkflow.test.jsx:46:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/UserWorkflow.test.jsx:37:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></div><div id="suite-2" class="suite-container"><input id="collapsible-1" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-1"><div class="suite-info"><div class="suite-path">/home/project/src/__tests__/CrossComponentDataFlow.test.jsx</div><div class="suite-time warn">8.548s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">Cross-component Data Flow</div><div class="test-title">Data flows correctly between FileUpload, Dashboard, and child components</div><div class="test-status">failed</div><div class="test-duration">5.02s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/CrossComponentDataFlow.test.jsx:45:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/CrossComponentDataFlow.test.jsx:36:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></div><div id="suite-3" class="suite-container"><input id="collapsible-2" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-2"><div class="suite-info"><div class="suite-path">/home/project/src/components/Dashboard.test.jsx</div><div class="suite-time">0.96s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">Dashboard Component</div><div class="test-title">displays empty state messages when no data is available</div><div class="test-status">failed</div><div class="test-duration">0.064s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  Found multiple elements with the text: No Data to Display
+
+Here are the matching elements:
+
+Ignored nodes: comments, script, style
+&lt;h3
+  class="text-xl font-semibold mb-2"
+&gt;
+  No Data to Display
+&lt;/h3&gt;
+
+Ignored nodes: comments, script, style
+&lt;h3
+  class="text-xl font-semibold mb-2"
+&gt;
+  No Data to Display
+&lt;/h3&gt;
+
+Ignored nodes: comments, script, style
+&lt;h3
+  class="text-xl font-semibold mb-2"
+&gt;
+  No Data to Display
+&lt;/h3&gt;
+
+(If this is intentional, then use the `*AllBy*` variant of the query (like `queryAllByText`, `getAllByText`, or `findAllByText`)).
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div
+      class="p-4 space-y-4"
+    &gt;
+      &lt;h1
+        class="text-2xl font-bold mb-4"
+      &gt;
+        Dashboard 2.0
+      &lt;/h1&gt;
+      &lt;div
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        style="opacity: 0; will-change: transform;"
+      &gt;
+        &lt;div
+          class="bg-white p-8 rounded-lg max-w-2xl"
+          style="will-change: transform; transform: scale(0.8);"
+        &gt;
+          &lt;h2
+            class="text-2xl font-bold mb-4"
+          &gt;
+            Welcome to Dashboard 2.0!
+          &lt;/h2&gt;
+          &lt;p
+            class="mb-4"
+          &gt;
+            Here's a quick guide to get you started:
+          &lt;/p&gt;
+          &lt;ul
+            class="list-disc list-inside mb-4"
+          &gt;
+            &lt;li&gt;
+              Use the filters at the top to refine your data
+            &lt;/li&gt;
+            &lt;li&gt;
+              Check out the summary statistics for a quick overview
+            &lt;/li&gt;
+            &lt;li&gt;
+              Explore the charts to visualize trends
+            &lt;/li&gt;
+            &lt;li&gt;
+              View detailed startup information in the table below
+            &lt;/li&gt;
+          &lt;/ul&gt;
+          &lt;button
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          &gt;
+            Get Started
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div
+        class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 w-full"
+      &gt;
+        &lt;div
+          class="flex flex-col space-y-1.5 p-6"
+        &gt;
+          &lt;h3
+            class="font-semibold leading-none tracking-tight flex justify-between items-center"
+          &gt;
+            &lt;span&gt;
+              Filters
+            &lt;/span&gt;
+          &lt;/h3&gt;
+        &lt;/div&gt;
+        &lt;div
+          class="p-6 pt-0"
+        &gt;
+          &lt;div
+            class="space-y-8"
+          &gt;
+            &lt;div
+              class="flex flex-col items-center justify-center h-64"
+            &gt;
+              &lt;h3
+                class="text-xl font-semibold mb-2"
+              &gt;
+                No Data to Display
+              &lt;/h3&gt;
+              &lt;p
+                class="text-gray-600 mb-4"
+              &gt;
+                Upload data from the File Management page to see available filters.
+              &lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div
+        class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50"
+      &gt;
+        &lt;div
+          class="flex flex-col space-y-1.5 p-6"
+        &gt;
+          &lt;h3
+            class="font-semibold leading-none tracking-tight"
+          &gt;
+            Summary Statistics
+          &lt;/h3&gt;
+        &lt;/div&gt;
+        &lt;div
+          class="p-6 pt-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+        &gt;
+          &lt;div
+            class="flex flex-col items-center justify-center h-64 col-span-full"
+          &gt;
+            &lt;h3
+              class="text-xl font-semibold mb-2"
+            &gt;
+              No Data Available
+            &lt;/h3&gt;
+            &lt;p
+              class="text-gray-600 mb-4"
+            &gt;
+              Upload data from the File Management page to see summary statistics.
+            &lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div
+        class="grid grid-cols-1 lg:grid-cols-2 gap-4"
+      &gt;
+        &lt;div
+          class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50"
+        &gt;
+          &lt;div
+            class="flex flex-col space-y-1.5 p-6"
+          &gt;
+            &lt;h3
+              class="font-semibold leading-none tracking-tight"
+            &gt;
+              Revenue vs Price
+              &lt;div
+                class="relative inline-block ml-2"
+              &gt;
+                &lt;svg
+                  class="lucide lucide-circle-help w-4 h-4 text-gray-400 cursor-help"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                &gt;
+                  &lt;circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  /&gt;
+                  &lt;path
+                    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                  /&gt;
+                  &lt;path
+                    d="M12 17h.01"
+                  /&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+            &lt;/h3&gt;
+          &lt;/div&gt;
+          &lt;div
+            class="p-6 pt-0"
+          &gt;
+            &lt;div
+              class="flex flex-col items-center justify-center h-64"
+            &gt;
+              &lt;h3
+                class="text-xl font-semibold mb-2"
+              &gt;
+                No Data to Display
+              &lt;/h3&gt;
+              &lt;p
+                class="text-gray-600 mb-4"
+              &gt;
+                Upload data from the File Management page to see the Revenue vs Price chart.
+              &lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div
+          class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50"
+        &gt;
+          &lt;div
+            class="flex flex-col space-y-1.5 p-6"
+          &gt;
+            &lt;h3
+              class="font-semibold leading-none tracking-tight"
+            &gt;
+              Profit vs Price
+              &lt;div
+                class="relative inline-block ml-2"
+              &gt;
+                &lt;svg
+                  class="lucide lucide-circle-help w-4 h-4 text-gray-400 cursor-help"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                &gt;
+                  &lt;circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                  /&gt;
+                  &lt;path
+                    d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                  /&gt;
+                  &lt;path
+                    d="M12 17h.01"
+                  /&gt;
+                &lt;/svg&gt;
+              &lt;/div&gt;
+            &lt;/h3&gt;
+          &lt;/div&gt;
+          &lt;div
+            class="p-6 pt-0"
+          &gt;
+            &lt;div
+              class="flex flex-col items-center justify-center h-64"
+            &gt;
+              &lt;h3
+                class="text-xl font-semibold mb-2"
+              &gt;
+                No Data to Display
+              &lt;/h3&gt;
+              &lt;p
+                class="text-gray-600 mb-4"
+              &gt;
+                Upload data from the File Management page to see the Profit vs Price chart.
+              &lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div
+        class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50"
+      &gt;
+        &lt;div
+          class="flex flex-col space-y-1.5 p-6"
+        &gt;
+          &lt;h3
+            class="font-semibold leading-none tracking-tight"
+          &gt;
+            Startup Details
+            &lt;div
+              class="relative inline-block ml-2"
+            &gt;
+              &lt;svg
+                class="lucide lucide-circle-help w-4 h-4 text-gray-400 cursor-help"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              &gt;
+                &lt;circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                /&gt;
+                &lt;path
+                  d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                /&gt;
+                &lt;path
+                  d="M12 17h.01"
+                /&gt;
+              &lt;/svg&gt;
+            &lt;/div&gt;
+          &lt;/h3&gt;
+        &lt;/div&gt;
+        &lt;div
+          class="p-6 pt-0"
+        &gt;
+          &lt;div
+            class="flex flex-col items-center justify-center h-64"
+          &gt;
+            &lt;h3
+              class="text-xl font-semibold mb-2"
+            &gt;
+              No Startup Data Available
+            &lt;/h3&gt;
+            &lt;p
+              class="text-gray-600 mb-4"
+            &gt;
+              Upload data from the File Management page to see detailed startup information.
+            &lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at Object.getElementError (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:37:19)
+    at getElementError (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:20:35)
+    at getMultipleElementsFoundError (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:23:10)
+    at eval (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:55:13)
+    at eval (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:95:19)
+    at Object.getByText (/home/project/src/components/Dashboard.test.jsx:28:19)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501
+    at new Promise (&lt;anonymous&gt;)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></div><div id="suite-4" class="suite-container"><input id="collapsible-3" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-3"><div class="suite-info"><div class="suite-path">/home/project/src/components/RangeFilter.test.jsx</div><div class="suite-time">0.597s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">RangeFilter</div><div class="test-title">renders correctly</div><div class="test-status">failed</div><div class="test-duration">0.065s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  (0 , _utils.cn) is not a function
+
+Difference:
+
+Compared values have no visual difference.TypeError: 
+    at eval (/home/project/src/components/ui/input.tsx:138:8)
+    at renderWithHooks (/home/project/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+    at updateForwardRef (/home/project/node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+    at beginWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+    at beginWork$1 (/home/project/node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+    at performUnitOfWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+    at workLoopSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+    at renderRootSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+    at recoverFromConcurrentError (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25889:20)
+    at performConcurrentWorkOnRoot (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25789:22)
+    at flushActQueue (/home/project/node_modules/react/cjs/react.development.js:2667:24)
+    at act (/home/project/node_modules/react/cjs/react.development.js:2582:11)
+    at eval (/home/project/node_modules/@testing-library/react/dist/act-compat.js:47:25)
+    at renderRoot (/home/project/node_modules/@testing-library/react/dist/pure.js:180:26)
+    at render (/home/project/node_modules/@testing-library/react/dist/pure.js:271:10)
+    at Object.eval (/home/project/src/components/RangeFilter.test.jsx:39:24)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at &lt;anonymous&gt; (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at async _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at async run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at async runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at async jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at async runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at async runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at async Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">RangeFilter</div><div class="test-title">updates minimum value</div><div class="test-status">failed</div><div class="test-duration">0.024s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  (0 , _utils.cn) is not a function
+
+Difference:
+
+Compared values have no visual difference.TypeError: 
+    at eval (/home/project/src/components/ui/input.tsx:138:8)
+    at renderWithHooks (/home/project/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+    at updateForwardRef (/home/project/node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+    at beginWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+    at beginWork$1 (/home/project/node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+    at performUnitOfWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+    at workLoopSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+    at renderRootSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+    at recoverFromConcurrentError (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25889:20)
+    at performConcurrentWorkOnRoot (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25789:22)
+    at flushActQueue (/home/project/node_modules/react/cjs/react.development.js:2667:24)
+    at act (/home/project/node_modules/react/cjs/react.development.js:2582:11)
+    at eval (/home/project/node_modules/@testing-library/react/dist/act-compat.js:47:25)
+    at renderRoot (/home/project/node_modules/@testing-library/react/dist/pure.js:180:26)
+    at render (/home/project/node_modules/@testing-library/react/dist/pure.js:271:10)
+    at Object.eval (/home/project/src/components/RangeFilter.test.jsx:52:24)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at &lt;anonymous&gt; (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at async _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at async run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at async runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at async jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at async runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at async runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at async Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">RangeFilter</div><div class="test-title">updates maximum value</div><div class="test-status">failed</div><div class="test-duration">0.038s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  (0 , _utils.cn) is not a function
+
+Difference:
+
+Compared values have no visual difference.TypeError: 
+    at eval (/home/project/src/components/ui/input.tsx:138:8)
+    at renderWithHooks (/home/project/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+    at updateForwardRef (/home/project/node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+    at beginWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+    at beginWork$1 (/home/project/node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+    at performUnitOfWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+    at workLoopSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+    at renderRootSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+    at recoverFromConcurrentError (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25889:20)
+    at performConcurrentWorkOnRoot (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25789:22)
+    at flushActQueue (/home/project/node_modules/react/cjs/react.development.js:2667:24)
+    at act (/home/project/node_modules/react/cjs/react.development.js:2582:11)
+    at eval (/home/project/node_modules/@testing-library/react/dist/act-compat.js:47:25)
+    at renderRoot (/home/project/node_modules/@testing-library/react/dist/pure.js:180:26)
+    at render (/home/project/node_modules/@testing-library/react/dist/pure.js:271:10)
+    at Object.eval (/home/project/src/components/RangeFilter.test.jsx:68:24)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at &lt;anonymous&gt; (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at async _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at async run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at async runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at async jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at async runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at async runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at async Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">RangeFilter</div><div class="test-title">shows error message for invalid range</div><div class="test-status">failed</div><div class="test-duration">0.025s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  (0 , _utils.cn) is not a function
+
+Difference:
+
+Compared values have no visual difference.TypeError: 
+    at eval (/home/project/src/components/ui/input.tsx:138:8)
+    at renderWithHooks (/home/project/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+    at updateForwardRef (/home/project/node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+    at beginWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+    at beginWork$1 (/home/project/node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+    at performUnitOfWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+    at workLoopSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+    at renderRootSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+    at recoverFromConcurrentError (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25889:20)
+    at performConcurrentWorkOnRoot (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25789:22)
+    at flushActQueue (/home/project/node_modules/react/cjs/react.development.js:2667:24)
+    at act (/home/project/node_modules/react/cjs/react.development.js:2582:11)
+    at eval (/home/project/node_modules/@testing-library/react/dist/act-compat.js:47:25)
+    at renderRoot (/home/project/node_modules/@testing-library/react/dist/pure.js:180:26)
+    at render (/home/project/node_modules/@testing-library/react/dist/pure.js:271:10)
+    at Object.eval (/home/project/src/components/RangeFilter.test.jsx:84:24)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at &lt;anonymous&gt; (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at async _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at async run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at async runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at async jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at async runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at async runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at async Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">RangeFilter</div><div class="test-title">sets values using presets</div><div class="test-status">failed</div><div class="test-duration">0.033s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  (0 , _utils.cn) is not a function
+
+Difference:
+
+Compared values have no visual difference.TypeError: 
+    at eval (/home/project/src/components/ui/input.tsx:138:8)
+    at renderWithHooks (/home/project/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+    at updateForwardRef (/home/project/node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+    at beginWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+    at beginWork$1 (/home/project/node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+    at performUnitOfWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+    at workLoopSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+    at renderRootSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+    at recoverFromConcurrentError (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25889:20)
+    at performConcurrentWorkOnRoot (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25789:22)
+    at flushActQueue (/home/project/node_modules/react/cjs/react.development.js:2667:24)
+    at act (/home/project/node_modules/react/cjs/react.development.js:2582:11)
+    at eval (/home/project/node_modules/@testing-library/react/dist/act-compat.js:47:25)
+    at renderRoot (/home/project/node_modules/@testing-library/react/dist/pure.js:180:26)
+    at render (/home/project/node_modules/@testing-library/react/dist/pure.js:271:10)
+    at Object.eval (/home/project/src/components/RangeFilter.test.jsx:95:24)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at &lt;anonymous&gt; (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at async _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at async run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at async runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at async jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at async runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at async runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at async Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">RangeFilter</div><div class="test-title">validates slider changes</div><div class="test-status">failed</div><div class="test-duration">0.022s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  (0 , _utils.cn) is not a function
+
+Difference:
+
+Compared values have no visual difference.TypeError: 
+    at eval (/home/project/src/components/ui/input.tsx:138:8)
+    at renderWithHooks (/home/project/node_modules/react-dom/cjs/react-dom.development.js:15486:18)
+    at updateForwardRef (/home/project/node_modules/react-dom/cjs/react-dom.development.js:19245:20)
+    at beginWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:21675:16)
+    at beginWork$1 (/home/project/node_modules/react-dom/cjs/react-dom.development.js:27465:14)
+    at performUnitOfWork (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26599:12)
+    at workLoopSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26505:5)
+    at renderRootSync (/home/project/node_modules/react-dom/cjs/react-dom.development.js:26473:7)
+    at recoverFromConcurrentError (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25889:20)
+    at performConcurrentWorkOnRoot (/home/project/node_modules/react-dom/cjs/react-dom.development.js:25789:22)
+    at flushActQueue (/home/project/node_modules/react/cjs/react.development.js:2667:24)
+    at act (/home/project/node_modules/react/cjs/react.development.js:2582:11)
+    at eval (/home/project/node_modules/@testing-library/react/dist/act-compat.js:47:25)
+    at renderRoot (/home/project/node_modules/@testing-library/react/dist/pure.js:180:26)
+    at render (/home/project/node_modules/@testing-library/react/dist/pure.js:271:10)
+    at Object.eval (/home/project/src/components/RangeFilter.test.jsx:107:38)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at &lt;anonymous&gt; (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at async _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at async _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at async run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at async runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at async jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at async runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at async runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at async Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></div><div id="suite-5" class="suite-container"><input id="collapsible-4" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-4"><div class="suite-info"><div class="suite-path">/home/project/src/components/Filter.test.jsx</div><div class="suite-time">1.764s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">Filter Component</div><div class="test-title">populates business types correctly from data</div><div class="test-status">failed</div><div class="test-duration">1.151s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  Unable to find an element with the text: all. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+&lt;body
+  data-scroll-locked="1"
+  style="pointer-events: none;"
+&gt;
+  &lt;span
+    aria-hidden="true"
+    data-aria-hidden="true"
+    data-radix-focus-guard=""
+    style="outline: none; opacity: 0; position: fixed; pointer-events: none;"
+    tabindex="0"
+  /&gt;
+  &lt;div
+    aria-hidden="true"
+    data-aria-hidden="true"
+  &gt;
+    &lt;div
+      class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 w-full"
+    &gt;
+      &lt;div
+        class="flex flex-col space-y-1.5 p-6"
+      &gt;
+        &lt;h3
+          class="font-semibold leading-none tracking-tight flex justify-between items-center"
+        &gt;
+          &lt;span&gt;
+            Filters
+          &lt;/span&gt;
+          &lt;button
+            class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 border border-neutral-200 bg-white shadow-sm hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 h-8 rounded-md px-3 text-xs"
+          &gt;
+            Reset All Filters
+          &lt;/button&gt;
+        &lt;/h3&gt;
+      &lt;/div&gt;
+      &lt;div
+        class="p-6 pt-0"
+      &gt;
+        &lt;div
+          class="space-y-8"
+        &gt;
+          &lt;div
+            class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          &gt;
+            &lt;div
+              class="space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-medium text-gray-700 flex items-center"
+              &gt;
+                &lt;span
+                  class="flex-grow"
+                &gt;
+                  Revenue
+                &lt;/span&gt;
+                &lt;div
+                  class="relative inline-block ml-2"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-circle-help w-4 h-4 text-gray-400 cursor-help"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                    /&gt;
+                    &lt;path
+                      d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                    /&gt;
+                    &lt;path
+                      d="M12 17h.01"
+                    /&gt;
+                  &lt;/svg&gt;
+                &lt;/div&gt;
+                &lt;div
+                  class="ml-2 w-6 h-6 flex items-center justify-center"
+                /&gt;
+              &lt;/h3&gt;
+              &lt;div
+                class="space-y-4"
+              &gt;
+                &lt;div
+                  class="flex justify-between items-center"
+                &gt;
+                  &lt;span
+                    class="text-sm font-medium text-gray-700"
+                  &gt;
+                    Revenue Range
+                  &lt;/span&gt;
+                  &lt;span
+                    class="text-sm text-gray-500"
+                  &gt;
+                    $0.00
+                     - 
+                    $10,000,000.00
+                  &lt;/span&gt;
+                &lt;/div&gt;
+                &lt;span
+                  aria-disabled="false"
+                  aria-label="Revenue Range range"
+                  class="relative flex items-center w-full h-5 touch-none"
+                  data-orientation="horizontal"
+                  dir="ltr"
+                  style="--radix-slider-thumb-transform: translateX(-50%);"
+                &gt;
+                  &lt;span
+                    class="relative w-full h-2 grow rounded-full bg-gray-200"
+                    data-orientation="horizontal"
+                  &gt;
+                    &lt;span
+                      class="absolute h-full rounded-full bg-blue-500"
+                      data-orientation="horizontal"
+                      style="left: 0%; right: 0%;"
+                    /&gt;
+                  &lt;/span&gt;
+                  &lt;span
+                    style="transform: var(--radix-slider-thumb-transform); position: absolute; left: calc(0% + 0px);"
+                  &gt;
+                    &lt;span
+                      aria-label="Revenue Range minimum value"
+                      aria-orientation="horizontal"
+                      aria-valuemax="100"
+                      aria-valuemin="0"
+                      aria-valuenow="0"
+                      class="block w-5 h-5 rounded-full bg-white border-2 border-blue-500 focus:outline-none focus-visible:ring focus-visible:ring-blue-300"
+                      data-orientation="horizontal"
+                      data-radix-collection-item=""
+                      role="slider"
+                      style=""
+                      tabindex[3...
+
+Ignored nodes: comments, script, style
+&lt;html&gt;
+  &lt;head /&gt;
+  &lt;body
+    data-scroll-locked="1"
+    style="pointer-events: none;"
+  &gt;
+    &lt;span
+      aria-hidden="true"
+      data-aria-hidden="true"
+      data-radix-focus-guard=""
+      style="outline: none; opacity: 0; position: fixed; pointer-events: none;"
+      tabindex="0"
+    /&gt;
+    &lt;div
+      aria-hidden="true"
+      data-aria-hidden="true"
+    &gt;
+      &lt;div
+        class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 w-full"
+      &gt;
+        &lt;div
+          class="flex flex-col space-y-1.5 p-6"
+        &gt;
+          &lt;h3
+            class="font-semibold leading-none tracking-tight flex justify-between items-center"
+          &gt;
+            &lt;span&gt;
+              Filters
+            &lt;/span&gt;
+            &lt;button
+              class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 border border-neutral-200 bg-white shadow-sm hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 h-8 rounded-md px-3 text-xs"
+            &gt;
+              Reset All Filters
+            &lt;/button&gt;
+          &lt;/h3&gt;
+        &lt;/div&gt;
+        &lt;div
+          class="p-6 pt-0"
+        &gt;
+          &lt;div
+            class="space-y-8"
+          &gt;
+            &lt;div
+              class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+            &gt;
+              &lt;div
+                class="space-y-2"
+              &gt;
+                &lt;h3
+                  class="text-sm font-medium text-gray-700 flex items-center"
+                &gt;
+                  &lt;span
+                    class="flex-grow"
+                  &gt;
+                    Revenue
+                  &lt;/span&gt;
+                  &lt;div
+                    class="relative inline-block ml-2"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-circle-help w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;circle
+                        cx="12"
+                        cy="12"
+                        r="10"
+                      /&gt;
+                      &lt;path
+                        d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                      /&gt;
+                      &lt;path
+                        d="M12 17h.01"
+                      /&gt;
+                    &lt;/svg&gt;
+                  &lt;/div&gt;
+                  &lt;div
+                    class="ml-2 w-6 h-6 flex items-center justify-center"
+                  /&gt;
+                &lt;/h3&gt;
+                &lt;div
+                  class="space-y-4"
+                &gt;
+                  &lt;div
+                    class="flex justify-between items-center"
+                  &gt;
+                    &lt;span
+                      class="text-sm font-medium text-gray-700"
+                    &gt;
+                      Revenue Range
+                    &lt;/span&gt;
+                    &lt;span
+                      class="text-sm text-gray-500"
+                    &gt;
+                      $0.00
+                       - 
+                      $10,000,000.00
+                    &lt;/span&gt;
+                  &lt;/div&gt;
+                  &lt;span
+                    aria-disabled="false"
+                    aria-label="Revenue Range range"
+                    class="relative flex items-center w-full h-5 touch-none"
+                    data-orientation="horizontal"
+                    dir="ltr"
+                    style="--radix-slider-thumb-transform: translateX(-50%);"
+                  &gt;
+                    &lt;span
+                      class="relative w-full h-2 grow rounded-full bg-gray-200"
+                      data-orientation="horizontal"
+                    &gt;
+                      &lt;span
+                        class="absolute h-full rounded-full bg-blue-500"
+                        data-orientation="horizontal"
+                        style="left: 0%; right: 0%;"
+                      /&gt;
+                    &lt;/span&gt;
+                    &lt;span
+                      style="transform: var(--radix-slider-thumb-transform); position: absolute; left: calc(0% + 0px);"
+                    &gt;
+                      &lt;span
+                        aria-label="Revenue Range minimum value"
+                        aria-orientation="horizontal"
+                        aria-valuemax="100"
+                        aria-valuemin="0"
+                        aria-valuenow="0"
+                        class="block w-5 h-5 rounded-full bg-white border-2 border-blue-500 focus:outline-none focus-visible:ring focus-visible:ring-...
+
+Difference:
+
+Compared values have no visual difference.Error: Unable to find an element with the text: all. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+&lt;body
+  data-scroll-locked="1"
+  style="pointer-events: none;"
+&gt;
+  &lt;span
+    aria-hidden="true"
+    data-aria-hidden="true"
+    data-radix-focus-guard=""
+    style="outline: none; opacity: 0; position: fixed; pointer-events: none;"
+    tabindex="0"
+  /&gt;
+  &lt;div
+    aria-hidden="true"
+    data-aria-hidden="true"
+  &gt;
+    &lt;div
+      class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 w-full"
+    &gt;
+      &lt;div
+        class="flex flex-col space-y-1.5 p-6"
+      &gt;
+        &lt;h3
+          class="font-semibold leading-none tracking-tight flex justify-between items-center"
+        &gt;
+          &lt;span&gt;
+            Filters
+          &lt;/span&gt;
+          &lt;button
+            class="inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 border border-neutral-200 bg-white shadow-sm hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 h-8 rounded-md px-3 text-xs"
+          &gt;
+            Reset All Filters
+          &lt;/button&gt;
+        &lt;/h3&gt;
+      &lt;/div&gt;
+      &lt;div
+        class="p-6 pt-0"
+      &gt;
+        &lt;div
+          class="space-y-8"
+        &gt;
+          &lt;div
+            class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          &gt;
+            &lt;div
+              class="space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-medium text-gray-700 flex items-center"
+              &gt;
+                &lt;span
+                  class="flex-grow"
+                &gt;
+                  Revenue
+                &lt;/span&gt;
+                &lt;div
+                  class="relative inline-block ml-2"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-circle-help w-4 h-4 text-gray-400 cursor-help"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                    /&gt;
+                    &lt;path
+                      d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"
+                    /&gt;
+                    &lt;path
+                      d="M12 17h.01"
+                    /&gt;
+                  &lt;/svg&gt;
+                &lt;/div&gt;
+                &lt;div
+                  class="ml-2 w-6 h-6 flex items-center justify-center"
+                /&gt;
+              &lt;/h3&gt;
+              &lt;div
+                class="space-y-4"
+              &gt;
+                &lt;div
+                  class="flex justify-between items-center"
+                &gt;
+                  &lt;span
+                    class="text-sm font-medium text-gray-700"
+                  &gt;
+                    Revenue Range
+                  &lt;/span&gt;
+                  &lt;span
+                    class="text-sm text-gray-500"
+                  &gt;
+                    $0.00
+                     - 
+                    $10,000,000.00
+                  &lt;/span&gt;
+                &lt;/div&gt;
+                &lt;span
+                  aria-disabled="false"
+                  aria-label="Revenue Range range"
+                  class="relative flex items-center w-full h-5 touch-none"
+                  data-orientation="horizontal"
+                  dir="ltr"
+                  style="--radix-slider-thumb-transform: translateX(-50%);"
+                &gt;
+                  &lt;span
+                    class="relative w-full h-2 grow rounded-full bg-gray-200"
+                    data-orientation="horizontal"
+                  &gt;
+                    &lt;span
+                      class="absolute h-full rounded-full bg-blue-500"
+                      data-orientation="horizontal"
+                      style="left: 0%; right: 0%;"
+                    /&gt;
+                  &lt;/span&gt;
+                  &lt;span
+                    style="transform: var(--radix-slider-thumb-transform); position: absolute; left: calc(0% + 0px);"
+                  &gt;
+                    &lt;span
+                      aria-label="Revenue Range minimum value"
+                      aria-orientation="horizontal"
+                      aria-valuemax="100"
+                      aria-valuemin="0"
+                      aria-valuenow="0"
+                      class="block w-5 h-5 rounded-full bg-white border-2 border-blue-500 focus:outline-none focus-visible:ring focus-visible:ring-blue-300"
+                      data-orientation="horizontal"
+                      data-radix-collection-item=""
+                      role="slider"
+                      style=""
+                      tabindex[3...
+    at waitForWrapper (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+    at _callee$ (/home/project/src/components/Filter.test.jsx:48:18)
+    at call (/home/project/src/components/Filter.test.jsx:2:1)
+    at Generator.tryCatch (/home/project/src/components/Filter.test.jsx:2:1)
+    at Generator._invoke [as next] (/home/project/src/components/Filter.test.jsx:2:1)
+    at asyncGeneratorStep (/home/project/src/components/Filter.test.jsx:2:1)
+    at asyncGeneratorStep (/home/project/src/components/Filter.test.jsx:2:1)
+    at _next (/home/project/src/components/Filter.test.jsx:2:1)
+    at https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501
+    at new Promise (&lt;anonymous&gt;)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at Object.eval (/home/project/src/components/Filter.test.jsx:2:1)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501
+    at new Promise (&lt;anonymous&gt;)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></div><div id="suite-6" class="suite-container"><input id="collapsible-5" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-5"><div class="suite-info"><div class="suite-path">/home/project/src/components/ErrorBoundary.test.jsx</div><div class="suite-time">0.472s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">ErrorBoundary</div><div class="test-title">renders children when there is no error</div><div class="test-status">passed</div><div class="test-duration">0.013s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ErrorBoundary</div><div class="test-title">renders error message when there is an error</div><div class="test-status">passed</div><div class="test-duration">0.016s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ErrorBoundary</div><div class="test-title">calls logError when an error occurs</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ErrorBoundary</div><div class="test-title">does not show error details in production</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">ErrorBoundary</div><div class="test-title">shows error details in development</div><div class="test-status">failed</div><div class="test-duration">0.006s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  Unable to find an element with the text: Test error. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div
+      class="p-4 bg-red-100 border border-red-400 text-red-700 rounded"
+    &gt;
+      &lt;h2
+        class="text-lg font-semibold mb-2"
+      &gt;
+        Something went wrong
+      &lt;/h2&gt;
+      &lt;p
+        class="mb-4"
+      &gt;
+        We're sorry, but an error occurred. Please try refreshing the page or contact support if the problem persists.
+      &lt;/p&gt;
+      &lt;details
+        class="whitespace-pre-wrap"
+      &gt;
+        Error: Test error
+        &lt;br /&gt;
+        
+    at ErrorThrowingComponent (/home/project/src/components/ErrorBoundary.test.jsx:24:9)
+    at ErrorBoundary
+      &lt;/details&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at Object.getElementError (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:37:19)
+    at eval (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:76:38)
+    at eval (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:52:17)
+    at eval (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:95:19)
+    at Object.getByText (/home/project/src/components/ErrorBoundary.test.jsx:90:19)
+    at Promise.then.completed (/home/project/node_modules/jest-circus/build/utils.js:298:28)
+    at https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21501
+    at new Promise (&lt;anonymous&gt;)
+    at new Promise (https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:21472)
+    at callAsyncCircusFn (/home/project/node_modules/jest-circus/build/utils.js:231:10)
+    at _callCircusTest (/home/project/node_modules/jest-circus/build/run.js:316:40)
+    at _runTest (/home/project/node_modules/jest-circus/build/run.js:252:3)
+    at _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:126:9)
+    at _runTestsForDescribeBlock (/home/project/node_modules/jest-circus/build/run.js:121:9)
+    at run (/home/project/node_modules/jest-circus/build/run.js:71:3)
+    at runAndTransformResultsToJestFormat (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></div><div id="suite-7" class="suite-container"><input id="collapsible-6" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-6"><div class="suite-info"><div class="suite-path">/home/project/src/components/StartupDetailsTable.test.jsx</div><div class="suite-time">0.614s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">StartupDetailsTable</div><div class="test-title">renders table with sample data</div><div class="test-status">passed</div><div class="test-duration">0.027s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">StartupDetailsTable</div><div class="test-title">calls onSort when table header is clicked</div><div class="test-status">passed</div><div class="test-duration">0.012s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">StartupDetailsTable</div><div class="test-title">shows correct number of pages</div><div class="test-status">passed</div><div class="test-duration">0.041s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">StartupDetailsTable</div><div class="test-title">changes page when pagination is clicked</div><div class="test-status">passed</div><div class="test-duration">0.034s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">StartupDetailsTable</div><div class="test-title">calls removeListingFromData when remove button is clicked</div><div class="test-status">passed</div><div class="test-duration">0.007s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">StartupDetailsTable</div><div class="test-title">changes records per page when dropdown is changed</div><div class="test-status">passed</div><div class="test-duration">0.052s</div></div></div></div></div><div id="suite-8" class="suite-container"><input id="collapsible-7" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-7"><div class="suite-info"><div class="suite-path">/home/project/src/components/SummaryStatistics.test.jsx</div><div class="suite-time">0.377s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">SummaryStatistics</div><div class="test-title">renders without crashing</div><div class="test-status">passed</div><div class="test-duration">0.017s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">SummaryStatistics</div><div class="test-title">displays "No Data Available" message when no data is uploaded</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">SummaryStatistics</div><div class="test-title">displays correct statistics when data is available</div><div class="test-status">passed</div><div class="test-duration">0.009s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">SummaryStatistics</div><div class="test-title">handles edge case with empty averageMetrics</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">SummaryStatistics</div><div class="test-title">Generate Report button is enabled when data is available</div><div class="test-status">passed</div><div class="test-duration">0.009s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">SummaryStatistics</div><div class="test-title">Generate Report button is not rendered when no data is available</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div></div></div><div id="suite-9" class="suite-container"><input id="collapsible-8" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-8"><div class="suite-info"><div class="suite-path">/home/project/src/components/FileUpload.test.jsx</div><div class="suite-time">0.515s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">FileUpload Component</div><div class="test-title">renders without crashing</div><div class="test-status">passed</div><div class="test-duration">0.014s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FileUpload Component</div><div class="test-title">handles file selection</div><div class="test-status">passed</div><div class="test-duration">0.006s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FileUpload Component</div><div class="test-title">displays error for non-CSV files</div><div class="test-status">passed</div><div class="test-duration">0.036s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FileUpload Component</div><div class="test-title">uploads file and shows progress</div><div class="test-status">passed</div><div class="test-duration">0.028s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FileUpload Component</div><div class="test-title">displays uploaded files in the table</div><div class="test-status">passed</div><div class="test-duration">0.031s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">FileUpload Component</div><div class="test-title">handles drag and drop</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div></div></div><div id="suite-10" class="suite-container"><input id="collapsible-9" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-9"><div class="suite-info"><div class="suite-path">/home/project/src/components/RevenueVsPriceChart.test.jsx</div><div class="suite-time">0.332s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">RevenueVsPriceChart</div><div class="test-title">renders chart with sample data</div><div class="test-status">passed</div><div class="test-duration">0.006s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">RevenueVsPriceChart</div><div class="test-title">handles empty data scenario</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">RevenueVsPriceChart</div><div class="test-title">updates chart when data changes</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div></div></div><div id="suite-11" class="suite-container"><input id="collapsible-10" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-10"><div class="suite-info"><div class="suite-path">/home/project/src/components/ProfitVsPriceChart.test.jsx</div><div class="suite-time">0.339s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">ProfitVsPriceChart</div><div class="test-title">renders chart with sample data</div><div class="test-status">passed</div><div class="test-duration">0.008s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ProfitVsPriceChart</div><div class="test-title">handles empty data scenario</div><div class="test-status">passed</div><div class="test-duration">0.001s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">ProfitVsPriceChart</div><div class="test-title">updates chart when data changes</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div></div></div><div id="suite-12" class="suite-container"><input id="collapsible-11" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-11"><div class="suite-info"><div class="suite-path">/home/project/src/context/DashboardContext.test.jsx</div><div class="suite-time">0.439s</div></div></label><div class="suite-tests"><div class="test-result passed"><div class="test-info"><div class="test-suitename">DashboardContext</div><div class="test-title">renders provider without crashing</div><div class="test-status">passed</div><div class="test-duration">0.002s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">DashboardContext</div><div class="test-title">provides default values</div><div class="test-status">passed</div><div class="test-duration">0.006s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">DashboardContext</div><div class="test-title">updates filters</div><div class="test-status">passed</div><div class="test-duration">0.004s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">DashboardContext</div><div class="test-title">updates data and hasUploadedData</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">DashboardContext</div><div class="test-title">removes listing from data</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div><div class="test-result passed"><div class="test-info"><div class="test-suitename">DashboardContext</div><div class="test-title">updates filter ranges when new data is set</div><div class="test-status">passed</div><div class="test-duration">0.003s</div></div></div></div></div><div id="suite-13" class="suite-container"><input id="collapsible-12" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-12"><div class="suite-info"><div class="suite-path">/home/project/src/__tests__/StatePersistence.test.jsx</div><div class="suite-time warn">13.321s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">State Persistence</div><div class="test-title">Dashboard state persists when navigating away and back</div><div class="test-status">failed</div><div class="test-duration">5.011s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/StatePersistence.test.jsx:59:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/StatePersistence.test.jsx:50:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">State Persistence</div><div class="test-title">File upload state persists when navigating away and back</div><div class="test-status">failed</div><div class="test-duration">5.01s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/StatePersistence.test.jsx:111:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/StatePersistence.test.jsx:50:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></div><div id="suite-14" class="suite-container"><input id="collapsible-13" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-13"><div class="suite-info"><div class="suite-path">/home/project/src/__tests__/PerformanceTests.test.jsx</div><div class="suite-time warn">13.837s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">Performance Tests</div><div class="test-title">Handling large dataset upload and processing</div><div class="test-status">failed</div><div class="test-duration">10.162s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  expect(received).toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has value: null
+
+Ignored nodes: comments, script, style
+&lt;html&gt;
+  &lt;head /&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;div
+          class="App"
+        &gt;
+          &lt;div
+            class="flex h-screen bg-white"
+          &gt;
+            &lt;div
+              class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+            &gt;
+              &lt;div
+                class="flex items-center justify-center h-16 border-b border-gray-200"
+              &gt;
+                &lt;span
+                  class="text-gray-900 font-bold text-lg"
+                &gt;
+                  Micro Startup Dashboard
+                &lt;/span&gt;
+              &lt;/div&gt;
+              &lt;nav
+                class="flex-1"
+              &gt;
+                &lt;ul
+                  class="space-y-2 py-4"
+                &gt;
+                  &lt;li&gt;
+                    &lt;a
+                      class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      href="/"
+                    &gt;
+                      &lt;svg
+                        class="lucide lucide-house mr-3 h-6 w-6"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      &gt;
+                        &lt;path
+                          d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                        /&gt;
+                        &lt;path
+                          d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                        /&gt;
+                      &lt;/svg&gt;
+                      Dashboard
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li&gt;
+                    &lt;a
+                      class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                      href="/file-management"
+                    &gt;
+                      &lt;svg
+                        class="lucide lucide-file-text mr-3 h-6 w-6"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      &gt;
+                        &lt;path
+                          d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                        /&gt;
+                        &lt;path
+                          d="M14 2v4a2 2 0 0 0 2 2h4"
+                        /&gt;
+                        &lt;path
+                          d="M10 9H8"
+                        /&gt;
+                        &lt;path
+                          d="M16 13H8"
+                        /&gt;
+                        &lt;path
+                          d="M16 17H8"
+                        /&gt;
+                      &lt;/svg&gt;
+                      File Management
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/nav&gt;
+              &lt;div
+                class="p-4 space-y-2"
+              &gt;
+                &lt;h3
+                  class="text-sm font-semibold text-gray-600 mb-2"
+                &gt;
+                  Quick Actions
+                &lt;/h3&gt;
+                &lt;div
+                  tabindex="0"
+                &gt;
+                  &lt;button
+                    class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-upload mr-2 h-4 w-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      /&gt;
+                      &lt;polyline
+                        points="17 8 12 3 7 8"
+                      /&gt;
+                      &lt;line
+                        x1="12"
+                        x2="12"
+                        y1="3"
+                        y2="15"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Upload File
+                  &lt;/button&gt;
+                &lt;/div&gt;
+                &lt;div
+                  tabindex="0"
+                &gt;
+                  &lt;button
+                    class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-chart-no-axes-column mr-2 h-4 w-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;line
+                        x1="18"
+                        x2="18"
+                        y1="20"
+                        y2="10"
+                      /&gt;
+                      &lt;line
+                        x1="12"
+                        x2="12"
+                        y1="20"
+                        y2="4"
+                      /&gt;
+                      &lt;line
+                        x1="6"
+                        x2="6"
+                        y1="20"
+                        y2="14"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Generate Report
+                  &lt;/button&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;main
+              class="flex-1 overflow-x-hidden overflow-y-auto"
+            &gt;
+              &lt;div
+                class="p-4 space-y-4"
+              &gt;
+                &lt;h1
+                  class="text-2xl font-bold mb-4"
+                &gt;
+                  File Management
+                &lt;/h1&gt;
+                &lt;div
+                  class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50"
+                &gt;
+                  &lt;div
+                    class="flex flex-col space-y-1.5 p-6"
+                  &gt;
+                    &lt;h3
+                      class="font-semibold leading-none tracking-tight"
+                    &gt;
+                      Files and Assets
+                    &lt;/h3&gt;
+                  &lt;/div&gt;
+                  &lt;div
+                    class="p-6 pt-0"
+                  &gt;
+                    &lt;div
+                      class="rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 p-6"
+                    &gt;
+                      &lt;h2
+                        class="text-2xl font-bold mb-4"
+                      &gt;
+                        Files and assets
+                      &lt;/h2&gt;
+                      &lt;p
+                        class="mb-4"
+                      &gt;
+                        Documents and attachments that have been uploaded as part of this project.
+                      &lt;/p&gt;
+                      &lt;div
+                        class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer"
+                      &gt;
+                        &lt;input
+                          accept=".csv"
+                          class="hidden"
+                          data-testid="file-input"
+                          id="fileInput"
+                          multiple=""
+                          type="file"
+                        /&gt;
+                        &lt;svg
+                          class="mx-auto h-12 w-12 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        &gt;
+                          &lt;path
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                          /&gt;
+                        &lt;/svg&gt;
+                        &lt;p
+                          class="mt-1"
+                        &gt;
+                          Click to upload or drag and drop
+                        &lt;/p&gt;
+                        &lt;p
+                          class="text-xs text-gray-500"
+                        &gt;
+                          CSV files only, maximum file size 50 MB
+                        &lt;/p&gt;
+                      &lt;/div&gt;
+                      &lt;div
+                        class="mt-4"
+                      &gt;
+                        &lt;h3
+                          class="font-semibold mb-2"
+                        &gt;
+                          Selected files:
+                        &lt;/h3&gt;
+                        &lt;ul
+                          class="list-disc pl-5"
+                        &gt;
+                          &lt;li&gt;
+                            large_dataset.csv
+                          &lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/div&gt;
+                      &lt;button
+                        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 mt-4"
+                        data-testid="upload-button"
+                      &gt;
+                        Upload File
+                      &lt;/button&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/main&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at __EXTERNAL_MATCHER_TRAP__ (/home/project/node_modules/expect/build/index.js:325:30)
+    at Object.throwingMatcher [as toBeInTheDocument] (/home/project/node_modules/expect/build/index.js:326:15)
+    at toBeInTheDocument (/home/project/src/__tests__/PerformanceTests.test.jsx:68:51)
+    at runWithExpensiveErrorDiagnosticsDisabled (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:47:12)
+    at checkCallback (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:124:77)
+    at Proxy.checkRealTimersCallback (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (/home/project/node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+    at node:internal/timers:246:4692</pre></div></div></div></div><div id="suite-15" class="suite-container"><input id="collapsible-14" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-14"><div class="suite-info"><div class="suite-path">/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx</div><div class="suite-time warn">20.484s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">File Upload and Filter Integration</div><div class="test-title">Uploading a valid file updates the Dashboard components</div><div class="test-status">failed</div><div class="test-duration">5.012s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:65:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:56:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">File Upload and Filter Integration</div><div class="test-title">Applying and clearing filters updates the StartupDetailsTable</div><div class="test-status">failed</div><div class="test-duration">1.048s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  Unable to find a label with the text of: Business Type
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      &lt;div
+        class="App"
+      &gt;
+        &lt;div
+          class="flex h-screen bg-white"
+        &gt;
+          &lt;div
+            class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+          &gt;
+            &lt;div
+              class="flex items-center justify-center h-16 border-b border-gray-200"
+            &gt;
+              &lt;span
+                class="text-gray-900 font-bold text-lg"
+              &gt;
+                Micro Startup Dashboard
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;nav
+              class="flex-1"
+            &gt;
+              &lt;ul
+                class="space-y-2 py-4"
+              &gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                    href="/"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-house mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                      /&gt;
+                      &lt;path
+                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Dashboard
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    href="/file-management"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-file-text mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      /&gt;
+                      &lt;path
+                        d="M14 2v4a2 2 0 0 0 2 2h4"
+                      /&gt;
+                      &lt;path
+                        d="M10 9H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 13H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 17H8"
+                      /&gt;
+                    &lt;/svg&gt;
+                    File Management
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/nav&gt;
+            &lt;div
+              class="p-4 space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-semibold text-gray-600 mb-2"
+              &gt;
+                Quick Actions
+              &lt;/h3&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-upload mr-2 h-4 w-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    /&gt;
+                    &lt;polyline
+                      points="17 8 12 3 7 8"
+                    /&gt;
+                    &lt;line
+                      x1="12"
+                      x2="12"
+                      y1="3"
+                      y2="15"
+                    /&gt;
+                  &lt;/svg&gt;
+                  Upload File
+                &lt;/button&gt;
+              &lt;/div&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors...
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      &lt;div
+        class="App"
+      &gt;
+        &lt;div
+          class="flex h-screen bg-white"
+        &gt;
+          &lt;div
+            class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+          &gt;
+            &lt;div
+              class="flex items-center justify-center h-16 border-b border-gray-200"
+            &gt;
+              &lt;span
+                class="text-gray-900 font-bold text-lg"
+              &gt;
+                Micro Startup Dashboard
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;nav
+              class="flex-1"
+            &gt;
+              &lt;ul
+                class="space-y-2 py-4"
+              &gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                    href="/"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-house mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                      /&gt;
+                      &lt;path
+                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Dashboard
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    href="/file-management"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-file-text mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      /&gt;
+                      &lt;path
+                        d="M14 2v4a2 2 0 0 0 2 2h4"
+                      /&gt;
+                      &lt;path
+                        d="M10 9H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 13H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 17H8"
+                      /&gt;
+                    &lt;/svg&gt;
+                    File Management
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/nav&gt;
+            &lt;div
+              class="p-4 space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-semibold text-gray-600 mb-2"
+              &gt;
+                Quick Actions
+              &lt;/h3&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-upload mr-2 h-4 w-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    /&gt;
+                    &lt;polyline
+                      points="17 8 12 3 7 8"
+                    /&gt;
+                    &lt;line
+                      x1="12"
+                      x2="12"
+                      y1="3"
+                      y2="15"
+                    /&gt;
+                  &lt;/svg&gt;
+                  Upload File
+                &lt;/button&gt;
+              &lt;/div&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors...
+
+Difference:
+
+Compared values have no visual difference.Error: Unable to find a label with the text of: Business Type
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      &lt;div
+        class="App"
+      &gt;
+        &lt;div
+          class="flex h-screen bg-white"
+        &gt;
+          &lt;div
+            class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+          &gt;
+            &lt;div
+              class="flex items-center justify-center h-16 border-b border-gray-200"
+            &gt;
+              &lt;span
+                class="text-gray-900 font-bold text-lg"
+              &gt;
+                Micro Startup Dashboard
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;nav
+              class="flex-1"
+            &gt;
+              &lt;ul
+                class="space-y-2 py-4"
+              &gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                    href="/"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-house mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                      /&gt;
+                      &lt;path
+                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Dashboard
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    href="/file-management"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-file-text mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      /&gt;
+                      &lt;path
+                        d="M14 2v4a2 2 0 0 0 2 2h4"
+                      /&gt;
+                      &lt;path
+                        d="M10 9H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 13H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 17H8"
+                      /&gt;
+                    &lt;/svg&gt;
+                    File Management
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/nav&gt;
+            &lt;div
+              class="p-4 space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-semibold text-gray-600 mb-2"
+              &gt;
+                Quick Actions
+              &lt;/h3&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-upload mr-2 h-4 w-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    /&gt;
+                    &lt;polyline
+                      points="17 8 12 3 7 8"
+                    /&gt;
+                    &lt;line
+                      x1="12"
+                      x2="12"
+                      y1="3"
+                      y2="15"
+                    /&gt;
+                  &lt;/svg&gt;
+                  Upload File
+                &lt;/button&gt;
+              &lt;/div&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors...
+    at waitForWrapper (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+    at eval (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:86:33)
+    at findByLabelText (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:104:45)
+    at call (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at Generator.tryCatch (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at Generator._invoke [as next] (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at asyncGeneratorStep (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at asyncGeneratorStep (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:22853</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">File Upload and Filter Integration</div><div class="test-title">Uploading an invalid file shows an error message</div><div class="test-status">failed</div><div class="test-duration">5.007s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:128:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:56:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">File Upload and Filter Integration</div><div class="test-title">Uploading an empty file shows appropriate message</div><div class="test-status">failed</div><div class="test-duration">5.009s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:137:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:56:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">File Upload and Filter Integration</div><div class="test-title">Multiple range filters interact correctly</div><div class="test-status">failed</div><div class="test-duration">1.042s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  Unable to find a label with the text of: Min Revenue
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      &lt;div
+        class="App"
+      &gt;
+        &lt;div
+          class="flex h-screen bg-white"
+        &gt;
+          &lt;div
+            class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+          &gt;
+            &lt;div
+              class="flex items-center justify-center h-16 border-b border-gray-200"
+            &gt;
+              &lt;span
+                class="text-gray-900 font-bold text-lg"
+              &gt;
+                Micro Startup Dashboard
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;nav
+              class="flex-1"
+            &gt;
+              &lt;ul
+                class="space-y-2 py-4"
+              &gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                    href="/"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-house mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                      /&gt;
+                      &lt;path
+                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Dashboard
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    href="/file-management"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-file-text mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      /&gt;
+                      &lt;path
+                        d="M14 2v4a2 2 0 0 0 2 2h4"
+                      /&gt;
+                      &lt;path
+                        d="M10 9H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 13H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 17H8"
+                      /&gt;
+                    &lt;/svg&gt;
+                    File Management
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/nav&gt;
+            &lt;div
+              class="p-4 space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-semibold text-gray-600 mb-2"
+              &gt;
+                Quick Actions
+              &lt;/h3&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-upload mr-2 h-4 w-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    /&gt;
+                    &lt;polyline
+                      points="17 8 12 3 7 8"
+                    /&gt;
+                    &lt;line
+                      x1="12"
+                      x2="12"
+                      y1="3"
+                      y2="15"
+                    /&gt;
+                  &lt;/svg&gt;
+                  Upload File
+                &lt;/button&gt;
+              &lt;/div&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors...
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      &lt;div
+        class="App"
+      &gt;
+        &lt;div
+          class="flex h-screen bg-white"
+        &gt;
+          &lt;div
+            class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+          &gt;
+            &lt;div
+              class="flex items-center justify-center h-16 border-b border-gray-200"
+            &gt;
+              &lt;span
+                class="text-gray-900 font-bold text-lg"
+              &gt;
+                Micro Startup Dashboard
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;nav
+              class="flex-1"
+            &gt;
+              &lt;ul
+                class="space-y-2 py-4"
+              &gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                    href="/"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-house mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                      /&gt;
+                      &lt;path
+                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Dashboard
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    href="/file-management"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-file-text mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      /&gt;
+                      &lt;path
+                        d="M14 2v4a2 2 0 0 0 2 2h4"
+                      /&gt;
+                      &lt;path
+                        d="M10 9H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 13H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 17H8"
+                      /&gt;
+                    &lt;/svg&gt;
+                    File Management
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/nav&gt;
+            &lt;div
+              class="p-4 space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-semibold text-gray-600 mb-2"
+              &gt;
+                Quick Actions
+              &lt;/h3&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-upload mr-2 h-4 w-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    /&gt;
+                    &lt;polyline
+                      points="17 8 12 3 7 8"
+                    /&gt;
+                    &lt;line
+                      x1="12"
+                      x2="12"
+                      y1="3"
+                      y2="15"
+                    /&gt;
+                  &lt;/svg&gt;
+                  Upload File
+                &lt;/button&gt;
+              &lt;/div&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors...
+
+Difference:
+
+Compared values have no visual difference.Error: Unable to find a label with the text of: Min Revenue
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      &lt;div
+        class="App"
+      &gt;
+        &lt;div
+          class="flex h-screen bg-white"
+        &gt;
+          &lt;div
+            class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+          &gt;
+            &lt;div
+              class="flex items-center justify-center h-16 border-b border-gray-200"
+            &gt;
+              &lt;span
+                class="text-gray-900 font-bold text-lg"
+              &gt;
+                Micro Startup Dashboard
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;nav
+              class="flex-1"
+            &gt;
+              &lt;ul
+                class="space-y-2 py-4"
+              &gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                    href="/"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-house mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                      /&gt;
+                      &lt;path
+                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Dashboard
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    href="/file-management"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-file-text mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      /&gt;
+                      &lt;path
+                        d="M14 2v4a2 2 0 0 0 2 2h4"
+                      /&gt;
+                      &lt;path
+                        d="M10 9H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 13H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 17H8"
+                      /&gt;
+                    &lt;/svg&gt;
+                    File Management
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/nav&gt;
+            &lt;div
+              class="p-4 space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-semibold text-gray-600 mb-2"
+              &gt;
+                Quick Actions
+              &lt;/h3&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-upload mr-2 h-4 w-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    /&gt;
+                    &lt;polyline
+                      points="17 8 12 3 7 8"
+                    /&gt;
+                    &lt;line
+                      x1="12"
+                      x2="12"
+                      y1="3"
+                      y2="15"
+                    /&gt;
+                  &lt;/svg&gt;
+                  Upload File
+                &lt;/button&gt;
+              &lt;/div&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors...
+    at waitForWrapper (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+    at eval (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:86:33)
+    at findByLabelText (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:156:42)
+    at call (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at Generator.tryCatch (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at Generator._invoke [as next] (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at asyncGeneratorStep (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at asyncGeneratorStep (/home/project/src/__tests__/FileUploadFilterIntegration.test.jsx:2:1)
+    at https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:22853</pre></div></div></div></div><div id="suite-16" class="suite-container"><input id="collapsible-15" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-15"><div class="suite-info"><div class="suite-path">/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx</div><div class="suite-time warn">23.526s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">Edge Cases and Error Handling</div><div class="test-title">Uploading an empty file shows appropriate message</div><div class="test-status">failed</div><div class="test-duration">5.014s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx:38:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx:29:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">Edge Cases and Error Handling</div><div class="test-title">Uploading an invalid file format shows error message</div><div class="test-status">failed</div><div class="test-duration">5.009s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx:63:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx:29:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">Edge Cases and Error Handling</div><div class="test-title">Applying filters with no matching results shows appropriate message</div><div class="test-status">failed</div><div class="test-duration">5.009s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx:88:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx:29:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">Edge Cases and Error Handling</div><div class="test-title">Handling network error during file upload</div><div class="test-status">failed</div><div class="test-duration">5.008s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  thrown: "Exceeded timeout of 5000 ms for a test.
+Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at test (/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx:138:3)
+    at _dispatchDescribe (/home/project/node_modules/jest-circus/build/index.js:91:26)
+    at Proxy.describe (/home/project/node_modules/jest-circus/build/index.js:55:5)
+    at Object.describe (/home/project/src/__tests__/EdgeCasesAndErrors.test.jsx:29:1)
+    at Runtime._execModule (/home/project/node_modules/jest-runtime/build/index.js:1439:24)
+    at Runtime._loadModule (/home/project/node_modules/jest-runtime/build/index.js:1022:12)
+    at Runtime.requireModule (/home/project/node_modules/jest-runtime/build/index.js:882:12)
+    at jestAdapter (/home/project/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:77:13)
+    at runTestInternal (/home/project/node_modules/jest-runner/build/runTest.js:367:16)
+    at runTest (/home/project/node_modules/jest-runner/build/runTest.js:444:34)
+    at Object.worker (/home/project/node_modules/jest-runner/build/testWorker.js:106:12)</pre></div></div></div></div><div id="suite-17" class="suite-container"><input id="collapsible-16" type="checkbox" class="toggle" checked="checked"/><label for="collapsible-16"><div class="suite-info"><div class="suite-path">/home/project/src/__tests__/ConcurrentActions.test.jsx</div><div class="suite-time warn">34.096s</div></div></label><div class="suite-tests"><div class="test-result failed"><div class="test-info"><div class="test-suitename">Concurrent User Actions</div><div class="test-title">Handles rapid filter changes correctly</div><div class="test-status">failed</div><div class="test-duration">10.195s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  expect(received).toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has value: null
+
+Ignored nodes: comments, script, style
+&lt;html&gt;
+  &lt;head /&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;div
+          class="App"
+        &gt;
+          &lt;div
+            class="flex h-screen bg-white"
+          &gt;
+            &lt;div
+              class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+            &gt;
+              &lt;div
+                class="flex items-center justify-center h-16 border-b border-gray-200"
+              &gt;
+                &lt;span
+                  class="text-gray-900 font-bold text-lg"
+                &gt;
+                  Micro Startup Dashboard
+                &lt;/span&gt;
+              &lt;/div&gt;
+              &lt;nav
+                class="flex-1"
+              &gt;
+                &lt;ul
+                  class="space-y-2 py-4"
+                &gt;
+                  &lt;li&gt;
+                    &lt;a
+                      class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                      href="/"
+                    &gt;
+                      &lt;svg
+                        class="lucide lucide-house mr-3 h-6 w-6"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      &gt;
+                        &lt;path
+                          d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                        /&gt;
+                        &lt;path
+                          d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                        /&gt;
+                      &lt;/svg&gt;
+                      Dashboard
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li&gt;
+                    &lt;a
+                      class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      href="/file-management"
+                    &gt;
+                      &lt;svg
+                        class="lucide lucide-file-text mr-3 h-6 w-6"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      &gt;
+                        &lt;path
+                          d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                        /&gt;
+                        &lt;path
+                          d="M14 2v4a2 2 0 0 0 2 2h4"
+                        /&gt;
+                        &lt;path
+                          d="M10 9H8"
+                        /&gt;
+                        &lt;path
+                          d="M16 13H8"
+                        /&gt;
+                        &lt;path
+                          d="M16 17H8"
+                        /&gt;
+                      &lt;/svg&gt;
+                      File Management
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/nav&gt;
+              &lt;div
+                class="p-4 space-y-2"
+              &gt;
+                &lt;h3
+                  class="text-sm font-semibold text-gray-600 mb-2"
+                &gt;
+                  Quick Actions
+                &lt;/h3&gt;
+                &lt;div
+                  tabindex="0"
+                &gt;
+                  &lt;button
+                    class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-upload mr-2 h-4 w-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      /&gt;
+                      &lt;polyline
+                        points="17 8 12 3 7 8"
+                      /&gt;
+                      &lt;line
+                        x1="12"
+                        x2="12"
+                        y1="3"
+                        y2="15"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Upload File
+         ...
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at __EXTERNAL_MATCHER_TRAP__ (/home/project/node_modules/expect/build/index.js:325:30)
+    at Object.throwingMatcher [as toBeInTheDocument] (/home/project/node_modules/expect/build/index.js:326:15)
+    at toBeInTheDocument (/home/project/src/__tests__/ConcurrentActions.test.jsx:62:51)
+    at runWithExpensiveErrorDiagnosticsDisabled (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:47:12)
+    at checkCallback (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:124:77)
+    at Proxy.checkRealTimersCallback (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (/home/project/node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+    at node:internal/timers:246:4692</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">Concurrent User Actions</div><div class="test-title">Handles simultaneous file uploads correctly</div><div class="test-status">failed</div><div class="test-duration">10.124s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  expect(received).toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has value: null
+
+Ignored nodes: comments, script, style
+&lt;html&gt;
+  &lt;head /&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;div
+          class="App"
+        &gt;
+          &lt;div
+            class="flex h-screen bg-white"
+          &gt;
+            &lt;div
+              class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+            &gt;
+              &lt;div
+                class="flex items-center justify-center h-16 border-b border-gray-200"
+              &gt;
+                &lt;span
+                  class="text-gray-900 font-bold text-lg"
+                &gt;
+                  Micro Startup Dashboard
+                &lt;/span&gt;
+              &lt;/div&gt;
+              &lt;nav
+                class="flex-1"
+              &gt;
+                &lt;ul
+                  class="space-y-2 py-4"
+                &gt;
+                  &lt;li&gt;
+                    &lt;a
+                      class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                      href="/"
+                    &gt;
+                      &lt;svg
+                        class="lucide lucide-house mr-3 h-6 w-6"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      &gt;
+                        &lt;path
+                          d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                        /&gt;
+                        &lt;path
+                          d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                        /&gt;
+                      &lt;/svg&gt;
+                      Dashboard
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li&gt;
+                    &lt;a
+                      class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      href="/file-management"
+                    &gt;
+                      &lt;svg
+                        class="lucide lucide-file-text mr-3 h-6 w-6"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      &gt;
+                        &lt;path
+                          d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                        /&gt;
+                        &lt;path
+                          d="M14 2v4a2 2 0 0 0 2 2h4"
+                        /&gt;
+                        &lt;path
+                          d="M10 9H8"
+                        /&gt;
+                        &lt;path
+                          d="M16 13H8"
+                        /&gt;
+                        &lt;path
+                          d="M16 17H8"
+                        /&gt;
+                      &lt;/svg&gt;
+                      File Management
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/nav&gt;
+              &lt;div
+                class="p-4 space-y-2"
+              &gt;
+                &lt;h3
+                  class="text-sm font-semibold text-gray-600 mb-2"
+                &gt;
+                  Quick Actions
+                &lt;/h3&gt;
+                &lt;div
+                  tabindex="0"
+                &gt;
+                  &lt;button
+                    class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-upload mr-2 h-4 w-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      /&gt;
+                      &lt;polyline
+                        points="17 8 12 3 7 8"
+                      /&gt;
+                      &lt;line
+                        x1="12"
+                        x2="12"
+                        y1="3"
+                        y2="15"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Upload File
+         ...
+
+Difference:
+
+Compared values have no visual difference.Error: 
+    at __EXTERNAL_MATCHER_TRAP__ (/home/project/node_modules/expect/build/index.js:325:30)
+    at Object.throwingMatcher [as toBeInTheDocument] (/home/project/node_modules/expect/build/index.js:326:15)
+    at toBeInTheDocument (/home/project/src/__tests__/ConcurrentActions.test.jsx:121:51)
+    at runWithExpensiveErrorDiagnosticsDisabled (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:47:12)
+    at checkCallback (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:124:77)
+    at Proxy.checkRealTimersCallback (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (/home/project/node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
+    at node:internal/timers:246:4692</pre></div></div><div class="test-result failed"><div class="test-info"><div class="test-suitename">Concurrent User Actions</div><div class="test-title">Handles rapid navigation between components</div><div class="test-status">failed</div><div class="test-duration">10.167s</div></div><div class="failureMessages"> <pre class="failureMsg">Expected value   undefined
+Received:
+  undefined
+
+Message:
+  Unable to find an element with the text: /Avg Revenue/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      &lt;div
+        class="App"
+      &gt;
+        &lt;div
+          class="flex h-screen bg-white"
+        &gt;
+          &lt;div
+            class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+          &gt;
+            &lt;div
+              class="flex items-center justify-center h-16 border-b border-gray-200"
+            &gt;
+              &lt;span
+                class="text-gray-900 font-bold text-lg"
+              &gt;
+                Micro Startup Dashboard
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;nav
+              class="flex-1"
+            &gt;
+              &lt;ul
+                class="space-y-2 py-4"
+              &gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                    href="/"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-house mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                      /&gt;
+                      &lt;path
+                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Dashboard
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    href="/file-management"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-file-text mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      /&gt;
+                      &lt;path
+                        d="M14 2v4a2 2 0 0 0 2 2h4"
+                      /&gt;
+                      &lt;path
+                        d="M10 9H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 13H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 17H8"
+                      /&gt;
+                    &lt;/svg&gt;
+                    File Management
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/nav&gt;
+            &lt;div
+              class="p-4 space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-semibold text-gray-600 mb-2"
+              &gt;
+                Quick Actions
+              &lt;/h3&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-upload mr-2 h-4 w-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    /&gt;
+                    &lt;polyline
+                      points="17 8 12 3 7 8"
+                    /&gt;
+                    &lt;line
+                      x1="12"
+                      x2="12"
+                      y1="3"
+                      y2="15"
+                    /&gt;
+                  &lt;/svg&gt;
+                  Upload File
+                &lt;/button&gt;
+              &lt;/div&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors...
+
+Ignored nodes: comments, script, style
+&lt;html&gt;
+  &lt;head /&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;div
+          class="App"
+        &gt;
+          &lt;div
+            class="flex h-screen bg-white"
+          &gt;
+            &lt;div
+              class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+            &gt;
+              &lt;div
+                class="flex items-center justify-center h-16 border-b border-gray-200"
+              &gt;
+                &lt;span
+                  class="text-gray-900 font-bold text-lg"
+                &gt;
+                  Micro Startup Dashboard
+                &lt;/span&gt;
+              &lt;/div&gt;
+              &lt;nav
+                class="flex-1"
+              &gt;
+                &lt;ul
+                  class="space-y-2 py-4"
+                &gt;
+                  &lt;li&gt;
+                    &lt;a
+                      class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                      href="/"
+                    &gt;
+                      &lt;svg
+                        class="lucide lucide-house mr-3 h-6 w-6"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      &gt;
+                        &lt;path
+                          d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                        /&gt;
+                        &lt;path
+                          d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                        /&gt;
+                      &lt;/svg&gt;
+                      Dashboard
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li&gt;
+                    &lt;a
+                      class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      href="/file-management"
+                    &gt;
+                      &lt;svg
+                        class="lucide lucide-file-text mr-3 h-6 w-6"
+                        fill="none"
+                        height="24"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      &gt;
+                        &lt;path
+                          d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                        /&gt;
+                        &lt;path
+                          d="M14 2v4a2 2 0 0 0 2 2h4"
+                        /&gt;
+                        &lt;path
+                          d="M10 9H8"
+                        /&gt;
+                        &lt;path
+                          d="M16 13H8"
+                        /&gt;
+                        &lt;path
+                          d="M16 17H8"
+                        /&gt;
+                      &lt;/svg&gt;
+                      File Management
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/nav&gt;
+              &lt;div
+                class="p-4 space-y-2"
+              &gt;
+                &lt;h3
+                  class="text-sm font-semibold text-gray-600 mb-2"
+                &gt;
+                  Quick Actions
+                &lt;/h3&gt;
+                &lt;div
+                  tabindex="0"
+                &gt;
+                  &lt;button
+                    class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-upload mr-2 h-4 w-4"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                      /&gt;
+                      &lt;polyline
+                        points="17 8 12 3 7 8"
+                      /&gt;
+                      &lt;line
+                        x1="12"
+                        x2="12"
+                        y1="3"
+                        y2="15"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Upload File
+         ...
+
+Difference:
+
+Compared values have no visual difference.Error: Unable to find an element with the text: /Avg Revenue/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div&gt;
+      &lt;div
+        class="App"
+      &gt;
+        &lt;div
+          class="flex h-screen bg-white"
+        &gt;
+          &lt;div
+            class="flex flex-col w-64 bg-white border-r border-gray-200 h-screen"
+          &gt;
+            &lt;div
+              class="flex items-center justify-center h-16 border-b border-gray-200"
+            &gt;
+              &lt;span
+                class="text-gray-900 font-bold text-lg"
+              &gt;
+                Micro Startup Dashboard
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;nav
+              class="flex-1"
+            &gt;
+              &lt;ul
+                class="space-y-2 py-4"
+              &gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium bg-gray-200 text-gray-900"
+                    href="/"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-house mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"
+                      /&gt;
+                      &lt;path
+                        d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                      /&gt;
+                    &lt;/svg&gt;
+                    Dashboard
+                  &lt;/a&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                  &lt;a
+                    class="flex items-center px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    href="/file-management"
+                  &gt;
+                    &lt;svg
+                      class="lucide lucide-file-text mr-3 h-6 w-6"
+                      fill="none"
+                      height="24"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    &gt;
+                      &lt;path
+                        d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"
+                      /&gt;
+                      &lt;path
+                        d="M14 2v4a2 2 0 0 0 2 2h4"
+                      /&gt;
+                      &lt;path
+                        d="M10 9H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 13H8"
+                      /&gt;
+                      &lt;path
+                        d="M16 17H8"
+                      /&gt;
+                    &lt;/svg&gt;
+                    File Management
+                  &lt;/a&gt;
+                &lt;/li&gt;
+              &lt;/ul&gt;
+            &lt;/nav&gt;
+            &lt;div
+              class="p-4 space-y-2"
+            &gt;
+              &lt;h3
+                class="text-sm font-semibold text-gray-600 mb-2"
+              &gt;
+                Quick Actions
+              &lt;/h3&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:pointer-events-none disabled:opacity-50 dark:focus-visible:ring-neutral-300 bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90 h-9 px-4 py-2 w-full flex items-center justify-center"
+                &gt;
+                  &lt;svg
+                    class="lucide lucide-upload mr-2 h-4 w-4"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  &gt;
+                    &lt;path
+                      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                    /&gt;
+                    &lt;polyline
+                      points="17 8 12 3 7 8"
+                    /&gt;
+                    &lt;line
+                      x1="12"
+                      x2="12"
+                      y1="3"
+                      y2="15"
+                    /&gt;
+                  &lt;/svg&gt;
+                  Upload File
+                &lt;/button&gt;
+              &lt;/div&gt;
+              &lt;div
+                tabindex="0"
+              &gt;
+                &lt;button
+                  class="whitespace-nowrap rounded-md text-sm font-medium transition-colors...
+    at waitForWrapper (/home/project/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:163:27)
+    at _callee14$ (/home/project/src/__tests__/ConcurrentActions.test.jsx:157:18)
+    at call (/home/project/src/__tests__/ConcurrentActions.test.jsx:2:1)
+    at Generator.tryCatch (/home/project/src/__tests__/ConcurrentActions.test.jsx:2:1)
+    at Generator._invoke [as next] (/home/project/src/__tests__/ConcurrentActions.test.jsx:2:1)
+    at asyncGeneratorStep (/home/project/src/__tests__/ConcurrentActions.test.jsx:2:1)
+    at asyncGeneratorStep (/home/project/src/__tests__/ConcurrentActions.test.jsx:2:1)
+    at https://zp1v56uxy8rdx5ypatb0ockcb9tr6a-oci3.w-credentialless-staticblitz.com/blitz.134daa3c.js:40:22853</pre></div></div></div></div></div></body></html>
