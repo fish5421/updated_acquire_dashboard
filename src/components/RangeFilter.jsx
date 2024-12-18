@@ -8,12 +8,10 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
   const [error, setError] = useState('');
   const [selectedPreset, setSelectedPreset] = useState(null);
 
-  // Determine if this filter represents a currency field
   const isCurrencyField = label.toLowerCase().includes('revenue') ||
     label.toLowerCase().includes('profit') ||
     label.toLowerCase().includes('price');
 
-  // Ensure that min, max, and value are valid before rendering
   if (min === undefined || max === undefined || !Array.isArray(value) || value.length !== 2) {
     console.error('Invalid props provided to RangeFilter:', { min, max, value });
     return null;
@@ -46,7 +44,6 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
 
   const handlePresetClick = (presetMin, presetMax, index) => {
     if (selectedPreset === index) {
-      // If the preset is already selected, reset to the full range
       validateAndUpdate([min, max]);
       setSelectedPreset(null);
     } else {
@@ -68,22 +65,20 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
   };
 
   useEffect(() => {
-    // Check if current value matches any preset
     const matchingPresetIndex = presets.findIndex(
       preset => preset.min === value[0] && preset.max === value[1]
     );
     setSelectedPreset(matchingPresetIndex !== -1 ? matchingPresetIndex : null);
   }, [value, presets]);
 
-  // A helper component for the currency input fields
   const CurrencyInput = ({ val, onChangeHandler, ariaLabel }) => (
     <div className="flex items-center space-x-1">
-      {isCurrencyField && <span className="text-gray-700">$</span>}
+      {isCurrencyField && <span className="text-neutral-dark">$</span>}
       <Input
         type="number"
         value={val}
         onChange={onChangeHandler}
-        className="w-24"
+        className="w-24 border border-neutral-light"
         aria-label={ariaLabel}
       />
     </div>
@@ -92,8 +87,8 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <span className="text-sm font-medium text-gray-700">{label}</span>
-        <span className="text-sm text-gray-500">
+        <span className="text-sm font-medium text-neutral-dark">{label}</span>
+        <span className="text-sm text-neutral-light">
           {formatCurrency(value[0])} - {formatCurrency(value[1])}
         </span>
       </div>
@@ -106,15 +101,15 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
         className="relative flex items-center w-full h-5 touch-none"
         aria-label={`${label} range`}
       >
-        <SliderPrimitive.Track className="relative w-full h-2 grow rounded-full bg-gray-200">
-          <SliderPrimitive.Range className="absolute h-full rounded-full bg-blue-500" />
+        <SliderPrimitive.Track className="relative w-full h-2 grow rounded-full bg-tertiary/30">
+          <SliderPrimitive.Range className="absolute h-full rounded-full bg-primary" />
         </SliderPrimitive.Track>
         <SliderPrimitive.Thumb
-          className="block w-5 h-5 rounded-full bg-white border-2 border-blue-500 focus:outline-none focus-visible:ring focus-visible:ring-blue-300"
+          className="block w-5 h-5 rounded-full bg-white border-2 border-primary focus:outline-none focus-visible:ring focus-visible:ring-primary/50"
           aria-label={`${label} minimum value`}
         />
         <SliderPrimitive.Thumb
-          className="block w-5 h-5 rounded-full bg-white border-2 border-blue-500 focus:outline-none focus-visible:ring focus-visible:ring-blue-300"
+          className="block w-5 h-5 rounded-full bg-white border-2 border-primary focus:outline-none focus-visible:ring focus-visible:ring-primary/50"
           aria-label={`${label} maximum value`}
         />
       </SliderPrimitive.Root>
@@ -124,14 +119,14 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
           onChangeHandler={handleInputChange(0)}
           ariaLabel={`Minimum ${label}`}
         />
-        <span className="text-gray-500">to</span>
+        <span className="text-neutral-light">to</span>
         <CurrencyInput
           val={value[1]}
           onChangeHandler={handleInputChange(1)}
           ariaLabel={`Maximum ${label}`}
         />
       </div>
-      {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
+      {error && <p className="text-red-600 text-sm" role="alert">{error}</p>}
       <div className="flex flex-wrap gap-2">
         {presets.map((preset, index) => (
           <Button
@@ -139,8 +134,8 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
             size="sm"
             onClick={() => handlePresetClick(preset.min, preset.max, index)}
             className={`transition-colors ${selectedPreset === index
-                ? "bg-blue-500 text-white hover:bg-blue-600"
-                : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+              ? "bg-primary text-white hover:bg-primary/90"
+              : "bg-white text-neutral-dark border border-neutral-light hover:bg-tertiary/30"
               }`}
           >
             {preset.label}

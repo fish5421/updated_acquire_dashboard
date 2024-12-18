@@ -1,53 +1,82 @@
-import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
+import React from 'react'
+import { Card, CardContent } from "@/components/ui/card"
+import { Tooltip } from "@/components/ui/tooltip"
+import { formatCurrency } from "@/lib/utils"
+import { BarChart3 } from "lucide-react"
 
 const SummaryStatistics = ({ averageMetrics, hasUploadedData }) => {
-  console.log('SummaryStatistics rendered with:', { averageMetrics, hasUploadedData });
+  if (!hasUploadedData || !averageMetrics || typeof averageMetrics !== 'object') {
+    return null
+  }
 
-  const renderMetric = (key, value) => {
-    console.log(`Rendering metric: ${key} = ${value}`);
-    return (
-      <div key={key}>
-        <p className="text-sm font-medium text-gray-500">{`Avg ${key.replace('avg', '')}`}</p>
-        <p className="mt-1 text-2xl sm:text-3xl font-semibold text-gray-900">
-          {key.includes('PriceTo')
-            ? value // Already formatted in Dashboard.jsx
-            : typeof value === 'number'
-              ? formatCurrency(value)
-              : value || 'N/A'}
-        </p>
-      </div>
-    );
-  };
+  const metricsToDisplay = [
+    {
+      label: 'Average Revenue',
+      key: 'avgRevenue',
+      format: (val) => formatCurrency(val),
+      icon: <BarChart3 className="w-4 h-4 text-primary" />,
+      tooltip: 'This metric represents the average TTM Revenue across all selected startups.'
+    },
+    {
+      label: 'Average Profit',
+      key: 'avgProfit',
+      format: (val) => formatCurrency(val),
+      icon: <BarChart3 className="w-4 h-4 text-primary" />,
+      tooltip: 'This metric shows the average TTM Profit for the selected startups.'
+    },
+    {
+      label: 'Average Price',
+      key: 'avgPrice',
+      format: (val) => formatCurrency(val),
+      icon: <BarChart3 className="w-4 h-4 text-primary" />,
+      tooltip: 'The average asking price of the selected startups.'
+    },
+    {
+      label: 'Avg Price/Revenue',
+      key: 'avgPriceToRevenue',
+      format: (val) => val,
+      icon: <BarChart3 className="w-4 h-4 text-primary" />,
+      tooltip: 'Average ratio of asking price to TTM revenue.'
+    },
+    {
+      label: 'Avg Price/Profit',
+      key: 'avgPriceToProfit',
+      format: (val) => val,
+      icon: <BarChart3 className="w-4 h-4 text-primary" />,
+      tooltip: 'Average ratio of asking price to TTM profit.'
+    }
+  ]
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          Summary Statistics
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {!hasUploadedData ? (
-          <div className="flex flex-col items-center justify-center h-64 col-span-full">
-            <h3 className="text-xl font-semibold mb-2">No Data Available</h3>
-            <p className="text-gray-600 mb-4">Upload data from the File Management page to see summary statistics.</p>
-          </div>
-        ) : (
-          <>
-            {averageMetrics && typeof averageMetrics === 'object' ? (
-              Object.entries(averageMetrics).map(([key, value]) => renderMetric(key, value))
-            ) : (
-              <div className="col-span-full">
-                <p>No metrics available</p>
-              </div>
-            )}
-          </>
-        )}
-      </CardContent>
-    </Card>
-  );
-};
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      {metricsToDisplay.map((metric, idx) => {
+        const value = averageMetrics[metric.key]
+        const formattedValue = value !== undefined && value !== null ? metric.format(value) : 'N/A'
 
-export default SummaryStatistics;
+        return (
+          <Tooltip key={idx} content={
+            <p className="text-sm text-neutral-dark">{metric.tooltip}</p>
+          }>
+            <div className="w-full">
+              <Card className="rounded-lg border border-neutral-light shadow-sm bg-white">
+                <CardContent className="p-4">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-neutral-light flex items-center space-x-1">
+                      {metric.icon}
+                      <span>{metric.label}</span>
+                    </p>
+                    <p className="text-2xl font-semibold text-neutral-dark">
+                      {formattedValue}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </Tooltip>
+        )
+      })}
+    </div>
+  )
+}
+
+export default SummaryStatistics

@@ -5,29 +5,261 @@ this feature while maintaining consistency with the existing codebase.
 
 First, review the existing code:
 <existing_code>
+<file_tree>
+/Users/petercorreia/workspace/updated_acquire_dashboard
+├── .cursorignore
+├── .babelrc
+├── index.html
+├── tailwind.config.js
+├── tsconfig.app.json
+├── Screenshot 2024-09-12 at 12.06.51 PM.png
+├── jest.setup.js
+├── jest.config.js
+├── vite.config.js
+├── test-report.html
+├── .cursorrules
+├── fileMock.js
+├── README.md
+├── claudeDev_docs
+├── ├── Dashboard_Improvements.md
+├── ├── TestCoverageSummary.md
+├── ├── FailingTestCases.md
+├── ├── IntegrationTestingGuide.md
+├── ├── TestingStrategy.md
+├── ├── currentTask.md
+├── └── FilterComponentTestPlan.md
+├── Screenshot 2024-09-16 at 10.12.28 AM.png
+├── Screenshot 2024-09-10 at 10.08.27 AM.png
+├── public
+├── └── favicon.svg
+├── Screenshot 2024-09-10 at 6.57.11 AM.png
+├── .replit
+├── package.json
+├── Scratch_Pad
+├── ├── meta_feature_prompt
+├── ├── feature_xml_output
+├── └── feature_prompt_with_code_to_llm
+├── components.json
+├── tsconfig.json
+├── Screenshot 2024-09-12 at 7.11.02 AM.png
+├── postcss.config.js
+├── Screenshot 2024-09-16 at 10.12.20 AM.png
+├── Screenshot 2024-09-13 at 4.40.24 PM.png
+└── src
+└── ├── context
+└── ├── ├── DashboardContext.test.jsx
+└── ├── └── DashboardContext.jsx
+└── ├── testReporters
+└── ├── └── failingTestReporter.js
+└── ├── App.css
+└── ├── index.css
+└── ├── components
+└── ├── ├── ui
+└── ├── ├── ├── card.tsx
+└── ├── ├── ├── slider.tsx
+└── ├── ├── ├── chart.tsx
+└── ├── ├── ├── table.tsx
+└── ├── ├── ├── tooltip.jsx
+└── ├── ├── ├── button.tsx
+└── ├── ├── ├── select.tsx
+└── ├── ├── ├── input.tsx
+└── ├── ├── └── skeleton.tsx
+└── ├── ├── VirtualRow.jsx
+└── ├── ├── FileList.jsx
+└── ├── ├── MultiFileUpload.jsx
+└── ├── ├── Filter.jsx
+└── ├── ├── FileUpload.jsx
+└── ├── ├── ErrorBoundary.jsx
+└── ├── ├── SummaryStatistics.jsx
+└── ├── ├── ProfitVsPriceChart.jsx
+└── ├── ├── RevenueVsPriceChart.test.jsx
+└── ├── ├── StartupDetailsTable.test.jsx
+└── ├── ├── Filter.test.jsx
+└── ├── ├── Sidebar.jsx
+└── ├── ├── Dashboard.jsx
+└── ├── ├── test_file.txt
+└── ├── ├── Dashboard.test.jsx
+└── ├── ├── SummaryStatistics.test.jsx
+└── ├── ├── RangeFilter.jsx
+└── ├── ├── TableHeader.jsx
+└── ├── ├── FileUpload.test.jsx
+└── ├── ├── Pagination.jsx
+└── ├── ├── RangeFilter.test.jsx
+└── ├── ├── ProfitVsPriceChart.test.jsx
+└── ├── ├── LazyChart.jsx
+└── ├── ├── StartupDetailsTable.jsx
+└── ├── ├── FileManagementContainer.jsx
+└── ├── ├── FileManagement.jsx
+└── ├── ├── RevenueVsPriceChart.jsx
+└── ├── ├── ErrorBoundary.test.jsx
+└── ├── └── VirtualTable.jsx
+└── ├── __tests__
+└── ├── ├── StatePersistence.test.jsx
+└── ├── ├── PerformanceTests.test.jsx
+└── ├── ├── CrossComponentDataFlow.test.jsx
+└── ├── ├── ConcurrentActions.test.jsx
+└── ├── ├── FileUploadFilterIntegration.test.jsx
+└── ├── ├── EdgeCasesAndErrors.test.jsx
+└── ├── └── UserWorkflow.test.jsx
+└── ├── hooks
+└── ├── ├── useDebounce.js
+└── ├── ├── useChartData.js
+└── ├── └── useTableData.js
+└── ├── App.jsx
+└── ├── lib
+└── ├── ├── utils.ts
+└── ├── └── errorLogger.js
+└── └── index.jsx
+</file_tree>
+
 <file_contents>
+File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/context/DashboardContext.test.jsx
+```jsx
+import React, { useContext } from 'react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { DashboardContext, DashboardProvider } from './DashboardContext';
+
+const TestComponent = () => {
+  const context = useContext(DashboardContext);
+  return (
+    <div>
+      <div data-testid="filters">{JSON.stringify(context.filters)}</div>
+      <div data-testid="data">{JSON.stringify(context.data)}</div>
+      <div data-testid="hasUploadedData">{context.hasUploadedData.toString()}</div>
+      <button onClick={() => context.setFilters({ ...context.filters, businessType: 'Tech' })}>
+        Update Filters
+      </button>
+      <button onClick={() => context.setData([{ id: 1, name: 'Test' }])}>
+        Update Data
+      </button>
+      <button onClick={() => context.removeListingFromData(0)}>
+        Remove Listing
+      </button>
+      <button onClick={() => context.setData([
+        { 'TTM Revenue': 5000000, 'TTM Profit': 1000000, 'Asking Price': 20000000 },
+        { 'TTM Revenue': 8000000, 'TTM Profit': 2000000, 'Asking Price': 30000000 },
+      ])}>
+        Set New Data
+      </button>
+    </div>
+  );
+};
+
+describe('DashboardContext', () => {
+  test('renders provider without crashing', () => {
+    render(
+      <DashboardProvider>
+        <div>Test</div>
+      </DashboardProvider>
+    );
+  });
+
+  test('provides default values', () => {
+    render(
+      <DashboardProvider>
+        <TestComponent />
+      </DashboardProvider>
+    );
+
+    const filtersElement = screen.getByTestId('filters');
+    expect(filtersElement).toHaveTextContent('"businessType":"all"');
+    expect(filtersElement).toHaveTextContent('"revenue":[0,10000000]');
+    expect(filtersElement).toHaveTextContent('"profit":[0,10000000]');
+    expect(filtersElement).toHaveTextContent('"price":[0,100000000]');
+
+    const dataElement = screen.getByTestId('data');
+    expect(dataElement).toHaveTextContent('[]');
+
+    const hasUploadedDataElement = screen.getByTestId('hasUploadedData');
+    expect(hasUploadedDataElement).toHaveTextContent('false');
+  });
+
+  test('updates filters', () => {
+    render(
+      <DashboardProvider>
+        <TestComponent />
+      </DashboardProvider>
+    );
+
+    fireEvent.click(screen.getByText('Update Filters'));
+
+    const filtersElement = screen.getByTestId('filters');
+    expect(filtersElement).toHaveTextContent('"businessType":"Tech"');
+  });
+
+  test('updates data and hasUploadedData', () => {
+    render(
+      <DashboardProvider>
+        <TestComponent />
+      </DashboardProvider>
+    );
+
+    fireEvent.click(screen.getByText('Update Data'));
+
+    const dataElement = screen.getByTestId('data');
+    expect(dataElement).toHaveTextContent('[{"id":1,"name":"Test"}]');
+
+    const hasUploadedDataElement = screen.getByTestId('hasUploadedData');
+    expect(hasUploadedDataElement).toHaveTextContent('true');
+  });
+
+  test('removes listing from data', () => {
+    render(
+      <DashboardProvider>
+        <TestComponent />
+      </DashboardProvider>
+    );
+
+    // First, add some data
+    fireEvent.click(screen.getByText('Update Data'));
+
+    // Then remove the listing
+    fireEvent.click(screen.getByText('Remove Listing'));
+
+    const dataElement = screen.getByTestId('data');
+    expect(dataElement).toHaveTextContent('[]');
+
+    const hasUploadedDataElement = screen.getByTestId('hasUploadedData');
+    expect(hasUploadedDataElement).toHaveTextContent('false');
+  });
+
+  test('updates filter ranges when new data is set', () => {
+    render(
+      <DashboardProvider>
+        <TestComponent />
+      </DashboardProvider>
+    );
+
+    fireEvent.click(screen.getByText('Set New Data'));
+
+    const filtersElement = screen.getByTestId('filters');
+    expect(filtersElement).toHaveTextContent('"revenue":[5000000,8000000]');
+    expect(filtersElement).toHaveTextContent('"profit":[1000000,2000000]');
+    expect(filtersElement).toHaveTextContent('"price":[20000000,30000000]');
+  });
+});
+```
+
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/context/DashboardContext.jsx
 ```jsx
-import React, { createContext, useState, useCallback, useMemo } from 'react';
+import React, { createContext, useState, useCallback, useMemo, useEffect } from 'react';
 
 /**
  * DashboardContext provides global state for the dashboard and file management.
- * This includes:
- * - files: array of uploaded file objects { id, name, data, metadata }.
- * - selectedFileId: the ID of the currently selected file.
- * - data: the data array of the selected file.
- * - filters, filterRanges: used for filtering dashboard data.
- * - updateFilterRanges: updates filterRanges based on current data.
- * - setFiles, setSelectedFileId: update the files and selected file.
- * - hasUploadedData: boolean indicating if there's any uploaded data.
- * - businessTypes: derived from the current data set if needed.
+ * 
+ * Changes made:
+ * - Removed single selectedFileId; replaced with selectedFileIds (array).
+ * - Data now aggregates from all selected files.
+ * - Added isLoadingData to handle loading states when selection changes.
+ * - Updated logic in useEffect to handle multiple file selections.
  */
 
 export const DashboardContext = createContext();
 
 export const DashboardProvider = ({ children }) => {
   const [files, setFiles] = useState([]);
-  const [selectedFileId, setSelectedFileId] = useState(null);
+  const [selectedFileIds, setSelectedFileIds] = useState([]);
 
   // Filters and ranges
   const [filters, setFilters] = useState({
@@ -43,9 +275,9 @@ export const DashboardProvider = ({ children }) => {
     price: [0, 0],
   });
 
+  const [isLoadingData, setIsLoadingData] = useState(false);
+
   const updateFilterRanges = useCallback((data) => {
-    // When data changes or when files are updated, determine min/max ranges:
-    // Only update if we have data
     if (!data || data.length === 0) return;
 
     const getNumeric = (item, key) => Number(item[key]) || 0;
@@ -79,17 +311,27 @@ export const DashboardProvider = ({ children }) => {
     });
   }, []);
 
-  // Derive currently selected file's data
-  const selectedFile = useMemo(() => {
-    return files.find(f => f.id === selectedFileId) || null;
-  }, [files, selectedFileId]);
+  // Derive selected files
+  const selectedFiles = useMemo(() => {
+    return files.filter(file => selectedFileIds.includes(file.id));
+  }, [files, selectedFileIds]);
 
-  const data = selectedFile && selectedFile.data ? selectedFile.data : [];
+  // Aggregated data from all selected files
+  const data = useMemo(() => {
+    if (selectedFiles.length === 0) return [];
+    return selectedFiles.reduce((acc, file) => {
+      if (file.data && Array.isArray(file.data)) {
+        return acc.concat(file.data);
+      }
+      return acc;
+    }, []);
+  }, [selectedFiles]);
+
   const hasUploadedData = files.length > 0;
 
-  // Derive business types if needed
+  // Derive business types
   const businessTypes = useMemo(() => {
-    if (!hasUploadedData) return ['all'];
+    if (!hasUploadedData || data.length === 0) return ['all'];
     const types = new Set();
     data.forEach(item => {
       if (item['Business Type']) {
@@ -99,20 +341,42 @@ export const DashboardProvider = ({ children }) => {
     return ['all', ...Array.from(types)];
   }, [data, hasUploadedData]);
 
+  // Handle updates when selected files change
+  useEffect(() => {
+    if (selectedFileIds.length === 0) {
+      // No files selected, reset filters to defaults
+      setFilters({
+        revenue: [0, 0],
+        profit: [0, 0],
+        price: [0, 0],
+        businessType: 'all',
+      });
+      return;
+    }
+
+    setIsLoadingData(true);
+    // Simulate async update if needed. Here we just update immediately.
+    Promise.resolve().then(() => {
+      updateFilterRanges(data);
+      setIsLoadingData(false);
+    });
+  }, [selectedFileIds, data, updateFilterRanges]);
+
   return (
     <DashboardContext.Provider
       value={{
         files,
         setFiles,
-        selectedFileId,
-        setSelectedFileId,
+        selectedFileIds,
+        setSelectedFileIds,
         data,
         filters,
         setFilters,
         filterRanges,
         updateFilterRanges,
         hasUploadedData,
-        businessTypes
+        businessTypes,
+        isLoadingData
       }}
     >
       {children}
@@ -161,6 +425,64 @@ const VirtualRow = React.memo(({ index, style, data, onRemove }) => {
 VirtualRow.displayName = 'VirtualRow';
 
 export default VirtualRow;
+```
+
+File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/FileList.jsx
+```jsx
+import React from 'react';
+import { Trash2 } from 'lucide-react';
+
+/**
+ * Updated to include checkboxes for multiple file selection.
+ * Props:
+ *  - files: array of {id, name, data, metadata}
+ *  - selectedFileIds: array of currently selected file IDs
+ *  - onToggleFileSelection: (id: string) => void
+ *  - onDeleteFile: (id: string) => void
+ */
+
+const FileList = ({ files, selectedFileIds, onToggleFileSelection, onDeleteFile }) => {
+    return (
+        <div className="w-full md:w-1/4 border-r border-gray-200 p-2 space-y-2">
+            <h2 className="font-bold text-lg">Uploaded Files</h2>
+            {files.length === 0 ? (
+                <p className="text-gray-500 text-sm">No files uploaded yet.</p>
+            ) : (
+                <ul className="space-y-1">
+                    {files.map(file => {
+                        const isSelected = selectedFileIds.includes(file.id);
+                        return (
+                            <li
+                                key={file.id}
+                                className={`flex items-center justify-between p-2 rounded hover:bg-gray-100 space-x-2 ${isSelected ? 'bg-blue-50' : ''
+                                    }`}
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="form-checkbox h-4 w-4 text-blue-600"
+                                    checked={isSelected}
+                                    onChange={() => onToggleFileSelection(file.id)}
+                                />
+                                <span className="font-medium truncate flex-grow">{file.name}</span>
+                                <button
+                                    className="text-red-500 hover:text-red-700"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onDeleteFile(file.id);
+                                    }}
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </li>
+                        );
+                    })}
+                </ul>
+            )}
+        </div>
+    );
+};
+
+export default FileList;
 ```
 
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/MultiFileUpload.jsx
@@ -291,46 +613,293 @@ const MultiFileUpload = ({ onFilesUploaded }) => {
 export default MultiFileUpload;
 ```
 
-File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/FileList.jsx
+File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/Filter.jsx
 ```jsx
-// FileList.jsx
-import React from 'react';
-import { Trash2 } from 'lucide-react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { HelpCircle, X } from 'lucide-react';
+import { Tooltip } from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
+import RangeFilter from './RangeFilter';
+import { DashboardContext } from '../context/DashboardContext';
+import { useDebounce } from '../hooks/useDebounce';
 
-const FileList = ({ files, selectedFileId, onSelectFile, onDeleteFile }) => {
+const Filter = () => {
+  const [activeTooltip, setActiveTooltip] = useState(null);
+  const [activeFilters, setActiveFilters] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const { filters, setFilters, filterRanges, hasUploadedData, businessTypes } = useContext(DashboardContext);
+
+  const debouncedSetFilters = useDebounce(setFilters, 300);
+
+  useEffect(() => {
+    const newActiveFilters = {};
+    Object.entries(filters).forEach(([key, value]) => {
+      if (Array.isArray(value) && (value[0] > filterRanges[key][0] || value[1] < filterRanges[key][1])) {
+        newActiveFilters[key] = true;
+      } else if (key === 'businessType' && value !== 'all') {
+        newActiveFilters[key] = true;
+      }
+    });
+    setActiveFilters(newActiveFilters);
+  }, [filters, filterRanges]);
+
+  const handleFilterChange = (key, newValue) => {
+    setIsLoading(true);
+    debouncedSetFilters(prevFilters => {
+      setIsLoading(false);
+      return { ...prevFilters, [key]: newValue };
+    });
+  };
+
+  const handleResetFilter = (key) => {
+    const resetValue = key === 'businessType' ? 'all' : filterRanges[key];
+    handleFilterChange(key, resetValue);
+  };
+
+  const resetAllFilters = () => {
+    setFilters({
+      revenue: filterRanges.revenue,
+      profit: filterRanges.profit,
+      price: filterRanges.price,
+      businessType: 'all',
+    });
+  };
+
+  const generatePresets = (key) => {
+    const [min, max] = filterRanges[key];
+    const range = max - min;
+    return [
+      { label: `${min} - ${Math.round(min + range * 0.25)}`, min: min, max: Math.round(min + range * 0.25) },
+      { label: `${Math.round(min + range * 0.25)} - ${Math.round(min + range * 0.5)}`, min: Math.round(min + range * 0.25), max: Math.round(min + range * 0.5) },
+      { label: `${Math.round(min + range * 0.5)} - ${Math.round(min + range * 0.75)}`, min: Math.round(min + range * 0.5), max: Math.round(min + range * 0.75) },
+      { label: `${Math.round(min + range * 0.75)} - ${max}`, min: Math.round(min + range * 0.75), max: max },
+    ];
+  };
+
+  if (!hasUploadedData) {
     return (
-        <div className="w-full md:w-1/4 border-r border-gray-200 p-2 space-y-2">
-            <h2 className="font-bold text-lg">Uploaded Files</h2>
-            {files.length === 0 ? (
-                <p className="text-gray-500 text-sm">No files uploaded yet.</p>
-            ) : (
-                <ul className="space-y-1">
-                    {files.map(file => (
-                        <li
-                            key={file.id}
-                            className={`flex justify-between items-center p-2 rounded cursor-pointer hover:bg-gray-100 ${file.id === selectedFileId ? 'bg-blue-100' : ''
-                                }`}
-                            onClick={() => onSelectFile(file.id)}
-                        >
-                            <span className="font-medium truncate">{file.name}</span>
-                            <button
-                                className="text-red-500 hover:text-red-700"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onDeleteFile(file.id);
-                                }}
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            )}
-        </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col items-center justify-center h-64">
+            <h3 className="text-xl font-semibold mb-2">No Data to Display</h3>
+            <p className="text-gray-600 mb-4">Upload data from the File Management page to see available filters.</p>
+          </div>
+        </CardContent>
+      </Card>
     );
+  }
+
+  // Count how many filters are active
+  const activeFilterCount = Object.keys(activeFilters).length;
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex justify-between items-center w-full">
+          <div className="flex flex-col space-y-1">
+            <CardTitle className="flex items-center space-x-2">
+              <span>Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="text-sm text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+                  {activeFilterCount} active {activeFilterCount === 1 ? 'filter' : 'filters'}
+                </span>
+              )}
+              {activeFilterCount === 0 && (
+                <span className="text-sm text-gray-500">No active filters</span>
+              )}
+            </CardTitle>
+          </div>
+          <Button onClick={resetAllFilters} variant="outline" size="sm">
+            Reset All Filters
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            {/* Revenue Filter */}
+            <div className="space-y-2">
+              <div className="h-8 flex items-center justify-between">
+                <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
+                  <span className="flex-grow capitalize flex items-center space-x-1">
+                    <span>Revenue</span>
+                    {activeFilters.revenue && <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>}
+                  </span>
+                  <Tooltip content="Adjust this slider to display startups within a certain revenue range. You can drag the handles, type exact values, or use preset ranges.">
+                    <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
+                  </Tooltip>
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    {activeFilters.revenue && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
+                        onClick={() => handleResetFilter('revenue')}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </h3>
+              </div>
+              <div className="min-h-[180px]">
+                {isLoading ? (
+                  <Skeleton className="h-[180px]" />
+                ) : (
+                  <RangeFilter
+                    label="Revenue Range"
+                    min={filterRanges.revenue[0]}
+                    max={filterRanges.revenue[1]}
+                    value={filters.revenue}
+                    onChange={(value) => handleFilterChange('revenue', value)}
+                    presets={generatePresets('revenue')}
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Profit Filter */}
+            <div className="space-y-2">
+              <div className="h-8 flex items-center justify-between">
+                <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
+                  <span className="flex-grow capitalize flex items-center space-x-1">
+                    <span>Profit</span>
+                    {activeFilters.profit && <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>}
+                  </span>
+                  <Tooltip content="Filter startups by profit range. Narrow down the displayed results by setting minimum and maximum profit values, or select a preset range.">
+                    <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
+                  </Tooltip>
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    {activeFilters.profit && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
+                        onClick={() => handleResetFilter('profit')}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </h3>
+              </div>
+              <div className="min-h-[180px]">
+                {isLoading ? (
+                  <Skeleton className="h-[180px]" />
+                ) : (
+                  <RangeFilter
+                    label="Profit Range"
+                    min={filterRanges.profit[0]}
+                    max={filterRanges.profit[1]}
+                    value={filters.profit}
+                    onChange={(value) => handleFilterChange('profit', value)}
+                    presets={generatePresets('profit')}
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* Price Filter */}
+            <div className="space-y-2">
+              <div className="h-8 flex items-center justify-between">
+                <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
+                  <span className="flex-grow capitalize flex items-center space-x-1">
+                    <span>Price</span>
+                    {activeFilters.price && <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>}
+                  </span>
+                  <Tooltip content="Set the asking price range for startups. Use the slider, enter exact values, or pick a preset to quickly filter the displayed startups.">
+                    <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
+                  </Tooltip>
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    {activeFilters.price && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
+                        onClick={() => handleResetFilter('price')}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </h3>
+              </div>
+              <div className="min-h-[180px]">
+                {isLoading ? (
+                  <Skeleton className="h-[180px]" />
+                ) : (
+                  <RangeFilter
+                    label="Price Range"
+                    min={filterRanges.price[0]}
+                    max={filterRanges.price[1]}
+                    value={filters.price}
+                    onChange={(value) => handleFilterChange('price', value)}
+                    presets={generatePresets('price')}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <div className="h-8 flex items-center justify-between">
+              <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
+                <span className="flex-grow flex items-center space-x-1">
+                  <span>Business Type</span>
+                  {activeFilters.businessType && <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>}
+                </span>
+                <Tooltip content="Filter startups by their business type. Select 'All' or choose a specific category to narrow your results.">
+                  <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
+                </Tooltip>
+                <div className="w-8 h-8 flex items-center justify-center">
+                  {activeFilters.businessType && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
+                      onClick={() => handleResetFilter('businessType')}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </h3>
+            </div>
+            <div className="min-h-[40px]">
+              {isLoading ? (
+                <Skeleton className="h-10" />
+              ) : (
+                <Select
+                  value={filters.businessType}
+                  onValueChange={(value) => handleFilterChange('businessType', value)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a business type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {businessTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {type === 'all' ? 'All' : type}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
-export default FileList;
+export default Filter;
 ```
 
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/FileUpload.jsx
@@ -498,243 +1067,6 @@ const FileUpload = ({ onUpload }) => {
 export default FileUpload;
 ```
 
-File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/ErrorBoundary.jsx
-```jsx
-import React from 'react';
-import logError from '@/lib/errorLogger';
-
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    this.setState({
-      error: error,
-      errorInfo: errorInfo
-    });
-    logError(error, {
-      component: 'ErrorBoundary',
-      errorInfo: errorInfo,
-      additionalInfo: 'Uncaught error in component tree'
-    });
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
-          <p className="mb-4">We're sorry, but an error occurred. Please try refreshing the page or contact support if the problem persists.</p>
-          {process.env.NODE_ENV === 'development' && (
-            <details className="whitespace-pre-wrap">
-              {this.state.error && this.state.error.toString()}
-              <br />
-              {this.state.errorInfo && this.state.errorInfo.componentStack}
-            </details>
-          )}
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
-
-export default ErrorBoundary;
-```
-
-File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/Filter.jsx
-```jsx
-import React, { useState, useEffect, useContext, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { HelpCircle, X } from 'lucide-react';
-import { Tooltip } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
-import RangeFilter from './RangeFilter';
-import { DashboardContext } from '../context/DashboardContext';
-import { useDebounce } from '../hooks/useDebounce';
-
-const Filter = () => {
-  const [activeTooltip, setActiveTooltip] = useState(null);
-  const [activeFilters, setActiveFilters] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const { filters, setFilters, filterRanges, hasUploadedData, businessTypes } = useContext(DashboardContext);
-
-  const debouncedSetFilters = useDebounce(setFilters, 300);
-
-  useEffect(() => {
-    const newActiveFilters = {};
-    Object.entries(filters).forEach(([key, value]) => {
-      if (Array.isArray(value) && (value[0] > filterRanges[key][0] || value[1] < filterRanges[key][1])) {
-        newActiveFilters[key] = true;
-      } else if (key === 'businessType' && value !== 'all') {
-        newActiveFilters[key] = true;
-      }
-    });
-    setActiveFilters(newActiveFilters);
-  }, [filters, filterRanges]);
-
-  const handleFilterChange = (key, newValue) => {
-    setIsLoading(true);
-    debouncedSetFilters(prevFilters => {
-      setIsLoading(false);
-      return { ...prevFilters, [key]: newValue };
-    });
-  };
-
-  const handleResetFilter = (key) => {
-    const resetValue = key === 'businessType' ? 'all' : filterRanges[key];
-    handleFilterChange(key, resetValue);
-  };
-
-  const resetAllFilters = () => {
-    setFilters({
-      revenue: filterRanges.revenue,
-      profit: filterRanges.profit,
-      price: filterRanges.price,
-      businessType: 'all',
-    });
-  };
-
-  const generatePresets = (key) => {
-    const [min, max] = filterRanges[key];
-    const range = max - min;
-    return [
-      { label: `${min} - ${min + range * 0.25}`, min: min, max: min + range * 0.25 },
-      { label: `${min + range * 0.25} - ${min + range * 0.5}`, min: min + range * 0.25, max: min + range * 0.5 },
-      { label: `${min + range * 0.5} - ${min + range * 0.75}`, min: min + range * 0.5, max: min + range * 0.75 },
-      { label: `${min + range * 0.75} - ${max}`, min: min + range * 0.75, max: max },
-    ];
-  };
-
-  if (!hasUploadedData) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Filters</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center h-64">
-            <h3 className="text-xl font-semibold mb-2">No Data to Display</h3>
-            <p className="text-gray-600 mb-4">Upload data from the File Management page to see available filters.</p>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <span>Filters</span>
-          <Button onClick={resetAllFilters} variant="outline" size="sm">
-            Reset All Filters
-          </Button>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {['revenue', 'profit', 'price'].map((key) => (
-              <div key={key} className="space-y-2">
-                <div className="h-8 flex items-center justify-between">
-                  <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
-                    <span className="flex-grow capitalize">{key}</span>
-                    <Tooltip content={`Set the ${key} range for startups to display`}>
-                      <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
-                    </Tooltip>
-                    <div className="w-8 h-8 flex items-center justify-center">
-                      {activeFilters[key] && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
-                          onClick={() => handleResetFilter(key)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                  </h3>
-                </div>
-                <div className="min-h-[180px]">
-                  {isLoading ? (
-                    <Skeleton className="h-[180px]" />
-                  ) : (
-                    <RangeFilter
-                      label={`${key} Range`}
-                      min={filterRanges[key][0]}
-                      max={filterRanges[key][1]}
-                      value={filters[key]}
-                      onChange={(value) => handleFilterChange(key, value)}
-                      presets={generatePresets(key)}
-                    />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="space-y-2">
-            <div className="h-8 flex items-center justify-between">
-              <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
-                <span className="flex-grow">Business Type</span>
-                <Tooltip content="Filter startups by their business type">
-                  <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
-                </Tooltip>
-                <div className="w-8 h-8 flex items-center justify-center">
-                  {activeFilters.businessType && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
-                      onClick={() => handleResetFilter('businessType')}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </h3>
-            </div>
-            <div className="min-h-[40px]">
-              {isLoading ? (
-                <Skeleton className="h-10" />
-              ) : (
-                <Select
-                  value={filters.businessType}
-                  onValueChange={(value) => handleFilterChange('businessType', value)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a business type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {businessTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type === 'all' ? 'All' : type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-export default Filter;
-```
-
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/SummaryStatistics.jsx
 ```jsx
 import React from 'react';
@@ -894,110 +1226,25 @@ const ProfitVsPriceChart = () => {
 export default React.memo(ProfitVsPriceChart);
 ```
 
-File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/Sidebar.jsx
-```jsx
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, FileText, Upload } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { Button } from "@/components/ui/button";
-
-const Sidebar = () => {
-  const location = useLocation();
-
-  const isActive = (path) => {
-    return location.pathname === path ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900';
-  };
-
-  return (
-    <div className="flex flex-col w-64 bg-white border-r border-gray-200 h-screen">
-      <div className="flex items-center justify-center h-16 border-b border-gray-200">
-        <span className="text-gray-900 font-bold text-lg">Micro Startup Dashboard</span>
-      </div>
-      <nav className="flex-1">
-        <ul className="space-y-2 py-4">
-          <li>
-            <Link to="/" className={`flex items-center px-4 py-2 text-sm font-medium ${isActive('/')}`}>
-              <Home className="mr-3 h-6 w-6" />
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link to="/file-management" className={`flex items-center px-4 py-2 text-sm font-medium ${isActive('/file-management')}`}>
-              <FileText className="mr-3 h-6 w-6" />
-              File Management
-            </Link>
-          </li>
-        </ul>
-      </nav>
-      <div className="p-4 space-y-2">
-        <h3 className="text-sm font-semibold text-gray-600 mb-2">Quick Actions</h3>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Link to="/file-management">
-            <Button
-              className="w-full flex items-center justify-center"
-            >
-              <Upload className="mr-2 h-4 w-4" />
-              Upload File
-            </Button>
-          </Link>
-        </motion.div>
-      </div>
-    </div>
-  );
-};
-
-export default Sidebar;
-```
-
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/Dashboard.jsx
 ```jsx
-import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
+import React, { useContext, useState, useMemo } from 'react';
 import { HelpCircle } from 'lucide-react';
-import { formatCurrency, calculateFinancialRatio, formatRatio } from "@/lib/utils";
-import logError from "@/lib/errorLogger";
+import { DashboardContext } from '../context/DashboardContext';
 import Filter from './Filter';
 import StartupDetailsTable from './StartupDetailsTable';
 import RevenueVsPriceChart from './RevenueVsPriceChart';
 import ProfitVsPriceChart from './ProfitVsPriceChart';
 import SummaryStatistics from './SummaryStatistics';
-import { DashboardContext } from '../context/DashboardContext';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import { formatRatio } from "@/lib/utils";
 
 const Dashboard = ({ isLoading }) => {
-  console.log('Dashboard rendering. isLoading:', isLoading);
+  const { data, hasUploadedData, isLoadingData, selectedFileIds } = useContext(DashboardContext);
 
-  const [activeTooltip, setActiveTooltip] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
-  const [error, setError] = useState(null);
-  const { data, filters, updateFilterRanges, hasUploadedData } = useContext(DashboardContext);
 
-  console.log('Dashboard data:', data);
-  console.log('Has uploaded data:', hasUploadedData);
-
-  const processData = useCallback(() => {
-    try {
-      console.log('Processing data. Data length:', data.length);
-      // If data changes and we have data, ensure filter ranges are up to date.
-      // This is optional since we updateFilterRanges in FileManagementContainer on file selection.
-      // But we can keep it as a safety net.
-      if (data.length > 0) {
-        updateFilterRanges(data);
-      }
-    } catch (err) {
-      logError(err, { component: 'Dashboard', function: 'processData' });
-      setError('An error occurred while processing the data. Please try again.');
-    }
-  }, [data, updateFilterRanges]);
-
-  useEffect(() => {
-    processData();
-  }, [processData]);
-
-  const generateReport = useCallback(() => {
-    console.log('Generating report');
-    // Implement report generation logic here
-  }, []);
+  const hasSelectedData = selectedFileIds.length > 0;
 
   const averageMetrics = useMemo(() => {
     if (!hasUploadedData || data.length === 0) {
@@ -1022,12 +1269,8 @@ const Dashboard = ({ isLoading }) => {
     const avgProfit = sum.profit / count;
     const avgPrice = sum.price / count;
 
-    console.log('Average calculations:', { avgRevenue, avgProfit, avgPrice });
-
     const avgPriceToRevenue = avgRevenue !== 0 ? avgPrice / avgRevenue : 0;
     const avgPriceToProfit = avgProfit !== 0 ? avgPrice / avgProfit : 0;
-
-    console.log('Ratio calculations:', { avgPriceToRevenue, avgPriceToProfit });
 
     return {
       avgRevenue,
@@ -1038,122 +1281,113 @@ const Dashboard = ({ isLoading }) => {
     };
   }, [data, hasUploadedData]);
 
-  console.log('Calculated average metrics:', averageMetrics);
-
-  const ContextualHelp = ({ id, content }) => (
-    <div className="relative inline-block ml-2">
-      <HelpCircle
-        className="w-4 h-4 text-gray-400 cursor-help"
-        onMouseEnter={() => setActiveTooltip(id)}
-        onMouseLeave={() => setActiveTooltip(null)}
-      />
-      {activeTooltip === id && (
-        <div className="absolute z-10 w-64 p-2 mt-2 text-sm bg-white rounded-md shadow-lg border border-gray-200">
-          {content}
+  if (!hasSelectedData) {
+    return (
+      <div className="p-4 space-y-4">
+        <h1 className="text-2xl font-bold mb-4">Dashboard 2.0</h1>
+        <div className="flex items-center justify-center h-64">
+          <p className="text-xl font-semibold">No files selected.</p>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    );
+  }
 
-  const EmptyStateMessage = ({ title, message }) => (
-    <div className="flex flex-col items-center justify-center h-64">
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-gray-600 mb-4">{message}</p>
-    </div>
-  );
+  if (isLoadingData) {
+    return (
+      <div className="p-4 space-y-4">
+        <h1 className="text-2xl font-bold mb-4">Dashboard 2.0</h1>
+        <div className="flex items-center justify-center h-64">
+          <svg className="animate-spin h-8 w-8 text-gray-500" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10"
+              fill="none" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-2xl font-bold mb-4">Dashboard 2.0</h1>
-      {isLoading ? (
-        <div className="flex items-center justify-center h-64">
-          <p className="text-xl font-semibold">Loading data...</p>
-        </div>
-      ) : (
-        <>
-          <Filter />
+      <Filter />
+      <SummaryStatistics
+        averageMetrics={averageMetrics}
+        hasUploadedData={hasUploadedData}
+      />
 
-          <SummaryStatistics
-            averageMetrics={averageMetrics}
-            hasUploadedData={hasUploadedData}
-            generateReport={generateReport}
-          />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              Revenue vs Price
+              <div className="relative inline-block ml-2">
+                <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {data.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-64">
+                <h3 className="text-xl font-semibold mb-2">No Data to Display</h3>
+                <p className="text-gray-600 mb-4">Select files to see the Revenue vs Price chart.</p>
+              </div>
+            ) : (
+              <RevenueVsPriceChart />
+            )}
+          </CardContent>
+        </Card>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Revenue vs Price
-                  <ContextualHelp
-                    id="help-revenue-price"
-                    content="This chart shows the relationship between a startup's revenue and its asking price"
-                  />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {!hasUploadedData ? (
-                  <EmptyStateMessage
-                    title="No Data to Display"
-                    message="Upload data from the File Management page to see the Revenue vs Price chart."
-                  />
-                ) : (
-                  <RevenueVsPriceChart />
-                )}
-              </CardContent>
-            </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              Profit vs Price
+              <div className="relative inline-block ml-2">
+                <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {data.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-64">
+                <h3 className="text-xl font-semibold mb-2">No Data to Display</h3>
+                <p className="text-gray-600 mb-4">Select files to see the Profit vs Price chart.</p>
+              </div>
+            ) : (
+              <ProfitVsPriceChart />
+            )}
+          </CardContent>
+        </Card>
+      </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Profit vs Price
-                  <ContextualHelp
-                    id="help-profit-price"
-                    content="This chart shows the relationship between a startup's profit and its asking price"
-                  />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {!hasUploadedData ? (
-                  <EmptyStateMessage
-                    title="No Data to Display"
-                    message="Upload data from the File Management page to see the Profit vs Price chart."
-                  />
-                ) : (
-                  <ProfitVsPriceChart />
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>
-                Startup Details
-                <ContextualHelp
-                  id="help-startup-details"
-                  content="This table shows detailed information for each startup matching your filters"
-                />
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {!hasUploadedData ? (
-                <EmptyStateMessage
-                  title="No Startup Data Available"
-                  message="Upload data from the File Management page to see detailed startup information."
-                />
-              ) : (
-                <StartupDetailsTable
-                  onSort={(key) => setSortConfig({
-                    key,
-                    direction: sortConfig.direction === 'ascending' ? 'descending' : 'ascending'
-                  })}
-                  sortConfig={sortConfig}
-                />
-              )}
-            </CardContent>
-          </Card>
-        </>
-      )}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            Startup Details
+            <div className="relative inline-block ml-2">
+              <HelpCircle className="w-4 h-4 text-gray-400 cursor-help" />
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {data.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-64">
+              <h3 className="text-xl font-semibold mb-2">No Startup Data Available</h3>
+              <p className="text-gray-600 mb-4">Select files to see detailed startup information.</p>
+            </div>
+          ) : (
+            <StartupDetailsTable
+              onSort={(key) => setSortConfig({
+                key,
+                direction: sortConfig.direction === 'ascending' ? 'descending' : 'ascending'
+              })}
+              sortConfig={sortConfig}
+            />
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
@@ -1173,22 +1407,32 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
   const [error, setError] = useState('');
   const [selectedPreset, setSelectedPreset] = useState(null);
 
+  // Determine if this filter represents a currency field
+  const isCurrencyField = label.toLowerCase().includes('revenue') ||
+    label.toLowerCase().includes('profit') ||
+    label.toLowerCase().includes('price');
+
   // Ensure that min, max, and value are valid before rendering
   if (min === undefined || max === undefined || !Array.isArray(value) || value.length !== 2) {
     console.error('Invalid props provided to RangeFilter:', { min, max, value });
-    return null; // or return an error message
+    return null;
   }
 
   const handleInputChange = (index) => (e) => {
-    const newValue = e.target.value === '' ? '' : Number(e.target.value);
+    const inputValue = e.target.value.trim() === '' ? '' : Number(e.target.value);
     const updatedValue = [...value];
-    updatedValue[index] = newValue;
+    updatedValue[index] = inputValue;
     validateAndUpdate(updatedValue);
     setSelectedPreset(null);
   };
 
   const validateAndUpdate = (newValue) => {
     const [newMin, newMax] = newValue;
+    if (typeof newMin !== 'number' || typeof newMax !== 'number' || isNaN(newMin) || isNaN(newMax)) {
+      setError('Please enter valid numeric values');
+      return;
+    }
+
     if (newMin > newMax) {
       setError('Min value cannot be greater than max value');
     } else if (newMin < min || newMax > max) {
@@ -1230,6 +1474,20 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
     setSelectedPreset(matchingPresetIndex !== -1 ? matchingPresetIndex : null);
   }, [value, presets]);
 
+  // A helper component for the currency input fields
+  const CurrencyInput = ({ val, onChangeHandler, ariaLabel }) => (
+    <div className="flex items-center space-x-1">
+      {isCurrencyField && <span className="text-gray-700">$</span>}
+      <Input
+        type="number"
+        value={val}
+        onChange={onChangeHandler}
+        className="w-24"
+        aria-label={ariaLabel}
+      />
+    </div>
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -1260,20 +1518,16 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
         />
       </SliderPrimitive.Root>
       <div className="flex items-center space-x-4">
-        <Input
-          type="number"
-          value={value[0]}
-          onChange={handleInputChange(0)}
-          className="w-24"
-          aria-label={`Minimum ${label}`}
+        <CurrencyInput
+          val={value[0]}
+          onChangeHandler={handleInputChange(0)}
+          ariaLabel={`Minimum ${label}`}
         />
         <span className="text-gray-500">to</span>
-        <Input
-          type="number"
-          value={value[1]}
-          onChange={handleInputChange(1)}
-          className="w-24"
-          aria-label={`Maximum ${label}`}
+        <CurrencyInput
+          val={value[1]}
+          onChangeHandler={handleInputChange(1)}
+          ariaLabel={`Maximum ${label}`}
         />
       </div>
       {error && <p className="text-red-500 text-sm" role="alert">{error}</p>}
@@ -1283,11 +1537,10 @@ const RangeFilter = ({ label, min, max, value, onChange, presets }) => {
             key={index}
             size="sm"
             onClick={() => handlePresetClick(preset.min, preset.max, index)}
-            className={`transition-colors ${
-              selectedPreset === index
+            className={`transition-colors ${selectedPreset === index
                 ? "bg-blue-500 text-white hover:bg-blue-600"
                 : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
-            }`}
+              }`}
           >
             {preset.label}
           </Button>
@@ -1336,7 +1589,7 @@ const TableHeader = ({ sortConfig, onSort }) => {
 
   return (
     <div className="flex border-b bg-white sticky top-0 z-10">
-      <HeaderCell label="Business Type" sortKey="Business Type" tooltip="Type of business" />
+      <HeaderCell label="Type" sortKey="Business Type" tooltip="Type of business" />
       <HeaderCell label="TTM Revenue" sortKey="TTM Revenue" tooltip="Trailing Twelve Months Revenue" />
       <HeaderCell label="TTM Profit" sortKey="TTM Profit" tooltip="Trailing Twelve Months Profit" />
       <HeaderCell label="Asking Price" sortKey="Asking Price" tooltip="Requested selling price" />
@@ -1349,100 +1602,6 @@ const TableHeader = ({ sortConfig, onSort }) => {
 };
 
 export default React.memo(TableHeader);
-```
-
-File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/FileUpload.test.jsx
-```jsx
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import FileUpload from './FileUpload';
-
-// Mock Papa Parse
-jest.mock('papaparse', () => ({
-  parse: jest.fn((file, config) => {
-    config.complete({
-      data: [{ col1: 'test', col2: 'data' }],
-    });
-  }),
-}));
-
-describe('FileUpload Component', () => {
-  const mockOnUpload = jest.fn();
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test('renders without crashing', () => {
-    render(<FileUpload onUpload={mockOnUpload} />);
-    expect(screen.getByText('Files and assets')).toBeInTheDocument();
-  });
-
-  test('handles file selection', () => {
-    render(<FileUpload onUpload={mockOnUpload} />);
-    const input = screen.getByTestId('file-input');
-    const file = new File(['test'], 'test.csv', { type: 'text/csv' });
-
-    fireEvent.change(input, { target: { files: [file] } });
-
-    expect(screen.getByText('test.csv')).toBeInTheDocument();
-  });
-
-  test('displays error for non-CSV files', () => {
-    render(<FileUpload onUpload={mockOnUpload} />);
-    const input = screen.getByTestId('file-input');
-    const file = new File(['test'], 'test.txt', { type: 'text/plain' });
-
-    fireEvent.change(input, { target: { files: [file] } });
-    fireEvent.click(screen.getByText('Upload File'));
-
-    expect(screen.getByText(/unsupported file type/i)).toBeInTheDocument();
-  });
-
-  test('uploads file and shows progress', async () => {
-    render(<FileUpload onUpload={mockOnUpload} />);
-    const input = screen.getByTestId('file-input');
-    const file = new File(['test'], 'test.csv', { type: 'text/csv' });
-
-    fireEvent.change(input, { target: { files: [file] } });
-    fireEvent.click(screen.getByText('Upload File'));
-
-    await waitFor(() => {
-      expect(screen.getByText('100% Uploaded')).toBeInTheDocument();
-    });
-
-    expect(mockOnUpload).toHaveBeenCalled();
-  });
-
-  test('displays uploaded files in the table', async () => {
-    render(<FileUpload onUpload={mockOnUpload} />);
-    const input = screen.getByTestId('file-input');
-    const file = new File(['test'], 'test.csv', { type: 'text/csv' });
-
-    fireEvent.change(input, { target: { files: [file] } });
-    fireEvent.click(screen.getByText('Upload File'));
-
-    await waitFor(() => {
-      expect(screen.getAllByText('test.csv').length).toBeGreaterThan(0);
-      expect(screen.getByText('Current User')).toBeInTheDocument();
-    });
-  });
-
-  test('handles drag and drop', () => {
-    render(<FileUpload onUpload={mockOnUpload} />);
-    const dropzone = screen.getByText(/Click to upload or drag and drop/i);
-    const file = new File(['test'], 'test.csv', { type: 'text/csv' });
-
-    fireEvent.drop(dropzone, {
-      dataTransfer: {
-        files: [file],
-      },
-    });
-
-    expect(screen.getByText('test.csv')).toBeInTheDocument();
-  });
-});
 ```
 
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/Pagination.jsx
@@ -1551,6 +1710,62 @@ const Pagination = ({
 export default React.memo(Pagination);
 ```
 
+File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/Sidebar.jsx
+```jsx
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Home, FileText, Upload } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Button } from "@/components/ui/button";
+
+const Sidebar = () => {
+  const location = useLocation();
+
+  const isActive = (path) => {
+    return location.pathname === path ? 'bg-gray-200 text-gray-900' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900';
+  };
+
+  return (
+    <div className="flex flex-col w-64 bg-white border-r border-gray-200 h-screen">
+      <div className="flex items-center justify-center h-16 border-b border-gray-200">
+        <span className="text-gray-900 font-bold text-lg">Micro Startup Dashboard</span>
+      </div>
+      <nav className="flex-1">
+        <ul className="space-y-2 py-4">
+          <li>
+            <Link to="/" className={`flex items-center px-4 py-2 text-sm font-medium ${isActive('/')}`}>
+              <Home className="mr-3 h-6 w-6" />
+              Dashboard
+            </Link>
+          </li>
+          <li>
+            <Link to="/file-management" className={`flex items-center px-4 py-2 text-sm font-medium ${isActive('/file-management')}`}>
+              <FileText className="mr-3 h-6 w-6" />
+              File Management
+            </Link>
+          </li>
+        </ul>
+      </nav>
+      <div className="p-4 space-y-2">
+        <h3 className="text-sm font-semibold text-gray-600 mb-2">Quick Actions</h3>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Link to="/file-management">
+            <Button
+              className="w-full flex items-center justify-center"
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              Upload File
+            </Button>
+          </Link>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;
+```
+
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/LazyChart.jsx
 ```jsx
 import React, { Suspense } from 'react';
@@ -1565,6 +1780,59 @@ const LazyChart = ({ Chart, data, height = 300 }) => {
 };
 
 export default LazyChart;
+```
+
+File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/FileManagementContainer.jsx
+```jsx
+// FileManagementContainer.jsx
+import React, { useContext, useCallback } from 'react';
+import MultiFileUpload from './MultiFileUpload';
+import FileList from './FileList';
+import { DashboardContext } from '../context/DashboardContext';
+
+/**
+ * Updated to handle toggling multiple file selections.
+ */
+
+const FileManagementContainer = () => {
+    const { files, setFiles, selectedFileIds, setSelectedFileIds } = useContext(DashboardContext);
+
+    const handleFilesUploaded = useCallback((uploadedFiles) => {
+        setFiles(prev => [...prev, ...uploadedFiles]);
+        // No automatic selection here; user will select files manually.
+    }, [setFiles]);
+
+    const handleToggleFileSelection = (fileId) => {
+        setSelectedFileIds(prev => {
+            if (prev.includes(fileId)) {
+                return prev.filter(id => id !== fileId);
+            } else {
+                return [...prev, fileId];
+            }
+        });
+    };
+
+    const handleDeleteFile = (id) => {
+        setFiles(prev => prev.filter(f => f.id !== id));
+        setSelectedFileIds(prev => prev.filter(fid => fid !== id));
+    };
+
+    return (
+        <div className="flex flex-col md:flex-row p-4">
+            <FileList
+                files={files}
+                selectedFileIds={selectedFileIds}
+                onToggleFileSelection={handleToggleFileSelection}
+                onDeleteFile={handleDeleteFile}
+            />
+            <div className="w-full md:w-3/4 p-4">
+                <MultiFileUpload onFilesUploaded={handleFilesUploaded} />
+            </div>
+        </div>
+    );
+};
+
+export default FileManagementContainer;
 ```
 
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/StartupDetailsTable.jsx
@@ -1713,68 +1981,6 @@ const StartupDetailsTable = ({ onSort, sortConfig }) => {
 };
 
 export default React.memo(StartupDetailsTable);
-```
-
-File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/FileManagementContainer.jsx
-```jsx
-// FileManagementContainer.jsx
-import React, { useContext, useCallback } from 'react';
-import MultiFileUpload from './MultiFileUpload';
-import FileList from './FileList';
-import { DashboardContext } from '../context/DashboardContext';
-
-const FileManagementContainer = () => {
-    const { files, setFiles, selectedFileId, setSelectedFileId, setFilters, updateFilterRanges, data } = useContext(DashboardContext);
-
-    const handleFilesUploaded = useCallback((uploadedFiles) => {
-        // Add new files to context
-        setFiles(prev => [...prev, ...uploadedFiles]);
-        // If this is the first upload or no file is selected, select the first of the newly uploaded
-        if (uploadedFiles.length > 0 && !selectedFileId) {
-            setSelectedFileId(uploadedFiles[0].id);
-            // Update filter ranges based on the newly selected file's data
-            updateFilterRanges(uploadedFiles[0].data);
-        }
-    }, [selectedFileId, setSelectedFileId, setFiles, updateFilterRanges]);
-
-    const handleSelectFile = (id) => {
-        setSelectedFileId(id);
-        const file = files.find(f => f.id === id);
-        if (file && file.data) {
-            updateFilterRanges(file.data);
-        } else {
-            // If no file or data, reset filters
-            updateFilterRanges([]);
-        }
-    };
-
-    const handleDeleteFile = (id) => {
-        // Remove file from context
-        setFiles(prev => prev.filter(f => f.id !== id));
-        if (id === selectedFileId) {
-            // If deleting the currently selected file
-            setSelectedFileId(null);
-            // With no selected file, update filters with empty data
-            updateFilterRanges([]);
-        }
-    };
-
-    return (
-        <div className="flex flex-col md:flex-row p-4">
-            <FileList
-                files={files}
-                selectedFileId={selectedFileId}
-                onSelectFile={handleSelectFile}
-                onDeleteFile={handleDeleteFile}
-            />
-            <div className="w-full md:w-3/4 p-4">
-                <MultiFileUpload onFilesUploaded={handleFilesUploaded} />
-            </div>
-        </div>
-    );
-};
-
-export default FileManagementContainer;
 ```
 
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/components/FileManagement.jsx
@@ -1983,6 +2189,45 @@ export const useDebounce = (callback, delay) => {
 };
 ```
 
+File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/hooks/useChartData.js
+```js
+import { useState, useEffect, useCallback } from 'react';
+
+const CHUNK_SIZE = 100;
+
+export const useChartData = (data) => {
+  const [chartData, setChartData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadChunk = useCallback((startIndex) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const chunk = data.slice(startIndex, startIndex + CHUNK_SIZE);
+        resolve(chunk);
+      }, 0);
+    });
+  }, [data]);
+
+  const loadData = useCallback(async () => {
+    setIsLoading(true);
+    const chunks = [];
+    for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+      const chunk = await loadChunk(i);
+      chunks.push(...chunk);
+      setChartData(prevData => [...prevData, ...chunk]);
+    }
+    setIsLoading(false);
+  }, [data, loadChunk]);
+
+  useEffect(() => {
+    setChartData([]);
+    loadData();
+  }, [loadData]);
+
+  return { chartData, isLoading };
+};
+```
+
 File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/hooks/useTableData.js
 ```js
 import { useState, useMemo, useCallback } from 'react';
@@ -2089,153 +2334,154 @@ export default function App() {
   );
 }
 ```
-
-File: /Users/petercorreia/workspace/updated_acquire_dashboard/src/hooks/useChartData.js
-```js
-import { useState, useEffect, useCallback } from 'react';
-
-const CHUNK_SIZE = 100;
-
-export const useChartData = (data) => {
-  const [chartData, setChartData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const loadChunk = useCallback((startIndex) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const chunk = data.slice(startIndex, startIndex + CHUNK_SIZE);
-        resolve(chunk);
-      }, 0);
-    });
-  }, [data]);
-
-  const loadData = useCallback(async () => {
-    setIsLoading(true);
-    const chunks = [];
-    for (let i = 0; i < data.length; i += CHUNK_SIZE) {
-      const chunk = await loadChunk(i);
-      chunks.push(...chunk);
-      setChartData(prevData => [...prevData, ...chunk]);
-    }
-    setIsLoading(false);
-  }, [data, loadChunk]);
-
-  useEffect(() => {
-    setChartData([]);
-    loadData();
-  }, [loadData]);
-
-  return { chartData, isLoading };
-};
-```
 </file_contents>
-
 
 
 </existing_code>
 
 Here is the new feature request:
 <feature_request>
-<feature_specification>
     <business_requirements>
-        <user_story>
-            As a user, I want to select multiple uploaded files from the File Management tab so that the
-            dashboard updates automatically with the latest metrics and data table for the chosen files.
-        </user_story>
-        
-        <acceptance_criteria>
-            <criterion>The "Uploaded Files" list displays each file with a selectable control (e.g., checkbox).</criterion>
-            <criterion>Selecting multiple files updates the dashboard's metrics and data table without additional user actions.</criterion>
-            <criterion>The dashboard shows a loading indicator while updating metrics and data tables.</criterion>
-            <criterion>If no files are selected, the dashboard displays a prompt (e.g., "No files selected" message).</criterion>
-        </acceptance_criteria>
-        
-        <business_rules>
-            <rule>The user must be able to select one or more files from the existing list.</rule>
-            <rule>Changes in file selection should trigger immediate updates (no explicit "Apply" button).</rule>
-            <rule>The solution should scale to handle a large number of uploaded files efficiently.</rule>
-            <rule>The feature must not break existing file upload functionality.</rule>
-        </business_rules>
+        <non_technical_requirements>
+            <user_story>
+                <description>As an investor, I want to easily compare key metrics of multiple businesses side-by-side so that I can quickly identify the most attractive opportunities without navigating back and forth.</description>
+                <acceptance_criteria>
+                    <criterion>Given I am viewing a table of businesses, when I click "Compare" on a business row, then that business is added to a comparison panel at the top of the page.</criterion>
+                    <criterion>Given that I have selected multiple businesses, when the comparison panel is visible, then the metrics (TTM Revenue, TTM Profit, Asking Price, Price-to-Revenue, Price-to-Profit) are displayed side-by-side.</criterion>
+                    <criterion>Given multiple businesses in the comparison, the best metric values should be visually highlighted.</criterion>
+                    <criterion>Given the comparison panel is visible, when I click a remove button on a particular business, that business is removed from the panel and the highlight recalculates.</criterion>
+                </acceptance_criteria>
+            </user_story>
+            <business_rules>
+                <rule>At least one business selection is required to display the comparison panel.</rule>
+                <rule>Consider limiting the number of businesses to compare (e.g., max 4).</rule>
+                <rule>Must support keyboard navigation and accessibility standards.</rule>
+                <rule>Must maintain responsive design for desktop, tablet, and mobile screens.</rule>
+            </business_rules>
+        </non_technical_requirements>
     </business_requirements>
 
     <technical_requirements>
-        <component_structure>
-            <component name="FileManagementSection">Displays a list of uploaded files with checkboxes.</component>
-            <component name="FileItem">Renders individual file entry with a checkbox.</component>
-            <component name="Dashboard">Displays metrics and data table.</component>
-            <component name="MainLayout">Manages state for selected files and passes data down to Dashboard.</component>
-        </component_structure>
-        
-        <state_management>
-            <hook>useState in the parent component for storing array of selected file IDs</hook>
-            <hook>useEffect to trigger data fetching when selectedFiles changes</hook>
-            <hook>useMemo for optimizing derived data calculations</hook>
-            <hook>useRef for tracking previous selections (optional)</hook>
-        </state_management>
-        
-        <props_interface>
-            <component name="FileItem">
-                <prop>fileId: string</prop>
-                <prop>fileName: string</prop>
-                <prop>isSelected: boolean</prop>
-                <prop>onSelect: (fileId: string, selected: boolean) => void</prop>
-            </component>
-            <component name="Dashboard">
-                <prop>selectedFiles: string[]</prop>
-                <prop>metricsData: MetricsType</prop>
-                <prop>tableData: TableDataType</prop>
-                <prop>isLoading: boolean</prop>
-            </component>
-        </props_interface>
+        <react_implementation>
+            <component_structure>
+                <component name="BusinessTable">
+                    <description>Renders the list of businesses and their "Compare" buttons.</description>
+                </component>
+                <component name="ComparisonBar">
+                    <description>Fixed/sticky component at the top that displays selected businesses side-by-side.</description>
+                </component>
+                <component name="ComparisonCard">
+                    <description>A child component of ComparisonBar representing each selected business's data.</description>
+                </component>
+                <component name="HighlightMetrics">
+                    <description>Utility/helper function (hook or standalone) to determine best metrics.</description>
+                </component>
+            </component_structure>
+            
+            <state_management>
+                <approach>Use useState or useReducer in a top-level component to track selected business IDs and their data.</approach>
+                <optimization>Consider using useMemo to compute standout metrics once the list of selected businesses changes.</optimization>
+            </state_management>
+            
+            <required_hooks>
+                <hook>useState for managing selected businesses.</hook>
+                <hook>useMemo for calculating and memoizing best metric values.</hook>
+                <hook>useEffect (if needed) for fetching updated business data.</hook>
+                <hook>useCallback for handling selection and removal actions efficiently.</hook>
+            </required_hooks>
+            
+            <props_interface>
+                <component name="BusinessTable">
+                    <prop>businesses: Business[]</prop>
+                    <prop>onCompareSelect: (id: string) => void</prop>
+                </component>
+                <component name="ComparisonBar">
+                    <prop>selectedBusinesses: Business[]</prop>
+                    <prop>onRemove: (id: string) => void</prop>
+                </component>
+                <component name="ComparisonCard">
+                    <prop>business: Business</prop>
+                    <prop>isBestMetric: (metricName: string) => boolean</prop>
+                    <prop>onRemove: () => void</prop>
+                </component>
+            </props_interface>
+        </react_implementation>
 
-        <styling>
+        <tailwind_specifications>
             <layout_classes>
-                <class name="file_list_container">flex flex-col space-y-2 p-4</class>
-                <class name="file_item">flex items-center space-x-2 p-2 border-b border-gray-200</class>
-                <class name="dashboard_container">p-4 flex flex-col space-y-4</class>
+                <class name="comparison_bar">fixed top-0 w-full bg-white shadow-md flex overflow-x-auto</class>
+                <class name="cards_in_bar">flex flex-col p-4 border-r border-gray-200</class>
             </layout_classes>
-            
             <responsive_design>
-                <breakpoint name="small">flex flex-col</breakpoint>
-                <breakpoint name="medium">md:flex-row md:space-x-4</breakpoint>
+                <class>overflow-x-auto for smaller screens</class>
+                <breakpoints>Use sm:, md:, lg: breakpoints to adjust font-size and padding.</breakpoints>
             </responsive_design>
-            
-            <custom_styles>
-                <style name="selected_file">bg-blue-50</style>
-                <style name="loading_indicator">animate-spin text-gray-500</style>
-            </custom_styles>
-        </styling>
+            <custom_styling>
+                <style name="best_metric">font-bold text-green-600</style>
+                <style name="standard_metrics">text-gray-700</style>
+                <style name="compare_button">text-blue-600 hover:underline</style>
+                <style name="remove_button">text-red-500 hover:text-red-700 focus:outline-none</style>
+            </custom_styling>
+        </tailwind_specifications>
 
         <api_requirements>
-            <requirement>Integration with existing API endpoints for metrics and table data</requirement>
-            <requirement>Handle loading and error states</requirement>
+            <requirement>No new endpoints required if data is already available.</requirement>
+            <requirement>Must have unique identifiers and numeric values for all required metrics.</requirement>
+            <requirement>If data updates in real-time, handle re-rendering gracefully.</requirement>
         </api_requirements>
 
         <performance_requirements>
-            <requirement>Debounce or batch API requests for multiple selections</requirement>
-            <requirement>Memoize components to avoid unnecessary re-renders</requirement>
-            <requirement>Maintain UI responsiveness with large file selections</requirement>
+            <requirement>Minimize re-renders by memoizing computed standout metrics.</requirement>
+            <requirement>Virtualize large tables if performance issues arise.</requirement>
         </performance_requirements>
     </technical_requirements>
 
     <validation>
         <test_scenarios>
-            <scenario>Select a single file and verify dashboard updates</scenario>
-            <scenario>Select multiple files and confirm data aggregation</scenario>
-            <scenario>Deselect all files and verify empty state</scenario>
-            <scenario>Rapid selection/deselection for UI responsiveness</scenario>
+            <scenario>
+                <name>Scenario 1</name>
+                <description>Add a single business using "Compare" and verify comparison bar appears with correct data.</description>
+            </scenario>
+            <scenario>
+                <name>Scenario 2</name>
+                <description>Add multiple businesses and verify side-by-side comparison with correct alignment.</description>
+            </scenario>
+            <scenario>
+                <name>Scenario 3</name>
+                <description>Remove a business from comparison and verify the metrics and highlighting update correctly.</description>
+            </scenario>
+            <scenario>
+                <name>Scenario 4</name>
+                <description>Verify that highlighting is assigned to the best metrics.</description>
+            </scenario>
+            <scenario>
+                <name>Scenario 5</name>
+                <description>Check keyboard navigation (Tab through "Compare" buttons and remove actions).</description>
+            </scenario>
         </test_scenarios>
-        
+
         <edge_cases>
-            <case>Empty "Uploaded Files" list</case>
-            <case>Large number of files selected (hundreds)</case>
-            <case>API errors or empty data sets</case>
-            <case>Slow network conditions</case>
+            <case>
+                <name>No Businesses Selected</name>
+                <handling>Comparison bar should not appear.</handling>
+            </case>
+            <case>
+                <name>Max Businesses Reached</name>
+                <handling>Attempts to add another business could either replace the oldest selection or block addition.</handling>
+            </case>
+            <case>
+                <name>Data Missing Metrics</name>
+                <handling>Display a placeholder or a "N/A" indicator.</handling>
+            </case>
+            <case>
+                <name>Large Numbers</name>
+                <handling>Metrics formatting should handle large values gracefully.</handling>
+            </case>
         </edge_cases>
-        
+
         <performance_metrics>
-            <metric>Dashboard updates within 2 seconds after selection changes</metric>
-            <metric>Minimal FPS drop during file selection operations</metric>
+            <metric>Interaction response should be under 200ms for visible UI updates.</metric>
+            <metric>Rendering should remain smooth under typical data sizes.</metric>
         </performance_metrics>
     </validation>
 </feature_specification></feature_request>

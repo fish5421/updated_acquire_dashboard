@@ -1,23 +1,18 @@
-import React, { useMemo, useContext, useState, useCallback } from 'react';
+import React, { useContext, useMemo, useState, useCallback } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { formatCompactNumber, formatCurrency } from '@/lib/utils';
 import { DashboardContext } from '@/context/DashboardContext';
+import { motion } from 'framer-motion';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const CHUNK_SIZE = 100;
 
 const ProfitVsPriceChart = () => {
-  const { data, filters } = useContext(DashboardContext);
+  const { getFilteredData } = useContext(DashboardContext);
+  const filteredData = useMemo(() => getFilteredData(), [getFilteredData]);
+
   const [displayedData, setDisplayedData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const filteredData = useMemo(() => {
-    return data.filter(item =>
-      (!filters.revenue || (item['TTM Revenue'] >= filters.revenue[0] && item['TTM Revenue'] <= filters.revenue[1])) &&
-      (!filters.profit || (item['TTM Profit'] >= filters.profit[0] && item['TTM Profit'] <= filters.profit[1])) &&
-      (!filters.price || (item['Asking Price'] >= filters.price[0] && item['Asking Price'] <= filters.price[1])) &&
-      (!filters.businessType || filters.businessType === 'all' || item['Business Type'] === filters.businessType)
-    );
-  }, [data, filters]);
 
   const loadChunk = useCallback((startIndex) => {
     return new Promise((resolve) => {
@@ -31,12 +26,12 @@ const ProfitVsPriceChart = () => {
   const loadData = useCallback(async () => {
     setIsLoading(true);
     setDisplayedData([]);
-    
+
     for (let i = 0; i < filteredData.length; i += CHUNK_SIZE) {
       const chunk = await loadChunk(i);
       setDisplayedData(prev => [...prev, ...chunk]);
     }
-    
+
     setIsLoading(false);
   }, [filteredData, loadChunk]);
 
@@ -62,36 +57,114 @@ const ProfitVsPriceChart = () => {
   }), [displayedData, calculateDomain]);
 
   if (isLoading) {
-    return <div className="h-[300px] flex items-center justify-center">Loading chart data...</div>;
+    // Construct a more elaborate skeleton structure
+    return (
+      <motion.div
+        className="relative h-[300px] w-full overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+      >
+        {/* 
+          Custom shimmer effect: 
+          We'll use a gradient background that moves left to right.
+          Tailwind tip: 
+          Use bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200
+          and position it absolutely, then animate its position with keyframes.
+        */}
+
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-[shimmer_2s_infinite_linear]"></div>
+
+        {/* 
+          Skeleton layout:
+          - One vertical axis line (left side)
+          - One horizontal axis line (bottom)
+          - A few horizontal grid lines
+          - Some circular skeletons representing points 
+        */}
+
+        <div className="relative h-full w-full p-6 flex flex-col justify-end">
+          {/* Vertical axis line */}
+          <div className="absolute left-8 bottom-0 h-[80%] w-[2px] rounded bg-gray-200/80"></div>
+
+          {/* Horizontal axis line */}
+          <div className="absolute left-8 bottom-6 w-[85%] h-[2px] rounded bg-gray-200/80"></div>
+
+          {/* Horizontal grid lines */}
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute left-8 bottom-6"
+              style={{
+                bottom: `${6 + (i + 1) * 50}px`,
+                width: '85%',
+                height: '2px',
+                backgroundColor: 'rgba(229, 231, 235, 0.6)',
+                borderRadius: '1px'
+              }}
+            ></div>
+          ))}
+
+          {/* Simulated data points as circles */}
+          {Array.from({ length: 7 }).map((_, i) => {
+            const randomLeft = 10 + Math.random() * 75; // percentage from left axis
+            const randomBottom = 10 + Math.random() * 200; // px from bottom axis line
+            return (
+              <div
+                key={i}
+                className="absolute bg-gray-200/80 rounded-full"
+                style={{
+                  left: `${randomLeft}%`,
+                  bottom: `${randomBottom}px`,
+                  width: '8px',
+                  height: '8px'
+                }}
+              ></div>
+            );
+          })}
+        </div>
+      </motion.div>
+    );
   }
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 80 }}>
-        <CartesianGrid />
-        <XAxis
-          type="number"
-          dataKey="TTM Profit"
-          name="Profit"
-          unit="$"
-          domain={domains.profit}
-          tickFormatter={(value) => formatCompactNumber(value)}
-        />
-        <YAxis
-          type="number"
-          dataKey="Asking Price"
-          name="Price"
-          unit="$"
-          domain={domains.price}
-          tickFormatter={(value) => formatCompactNumber(value)}
-        />
-        <Tooltip
-          formatter={(value, name) => [formatCurrency(value), name]}
-          labelFormatter={() => ''}
-        />
-        <Scatter name="Profit vs Price" data={displayedData} fill="#82ca9d" />
-      </ScatterChart>
-    </ResponsiveContainer>
+    <motion.div
+      className="h-[300px]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+    >
+      <ResponsiveContainer width="100%" height={300}>
+        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 80 }}>
+          <CartesianGrid stroke="#e0e0e0" />
+          <XAxis
+            type="number"
+            dataKey="TTM Profit"
+            name="Profit"
+            unit="$"
+            domain={domains.profit}
+            tickFormatter={(value) => formatCompactNumber(value)}
+            stroke="#111729"
+          />
+          <YAxis
+            type="number"
+            dataKey="Asking Price"
+            name="Price"
+            unit="$"
+            domain={domains.price}
+            tickFormatter={(value) => formatCompactNumber(value)}
+            stroke="#111729"
+          />
+          <Tooltip
+            formatter={(value, name) => [formatCurrency(value), name]}
+            labelFormatter={() => ''}
+            contentStyle={{ backgroundColor: 'white', border: '1px solid #97A3B6', borderRadius: '4px' }}
+            itemStyle={{ color: '#111729' }}
+          />
+          <Scatter name="Profit vs Price" data={displayedData} fill="#287F71" />
+        </ScatterChart>
+      </ResponsiveContainer>
+    </motion.div>
   );
 };
 

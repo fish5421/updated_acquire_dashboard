@@ -1,19 +1,10 @@
 import React, { createContext, useState, useCallback, useMemo, useEffect } from 'react';
-
-/**
- * DashboardContext provides global state for the dashboard and file management.
- * 
- * Changes made:
- * - Removed single selectedFileId; replaced with selectedFileIds (array).
- * - Data now aggregates from all selected files.
- * - Added isLoadingData to handle loading states when selection changes.
- * - Updated logic in useEffect to handle multiple file selections.
- */
+import { v4 as uuidv4 } from 'uuid';
 
 export const DashboardContext = createContext();
 
 export const DashboardProvider = ({ children }) => {
-  const [files, setFiles] = useState([]);
+  const [files, setFilesState] = useState([]);
   const [selectedFileIds, setSelectedFileIds] = useState([]);
 
   // Filters and ranges
@@ -66,40 +57,42 @@ export const DashboardProvider = ({ children }) => {
     });
   }, []);
 
-  // Derive selected files
-  const selectedFiles = useMemo(() => {
+  // Memoized selector for selectedFiles
+  const selectedFilesSelector = useMemo(() => {
     return files.filter(file => selectedFileIds.includes(file.id));
   }, [files, selectedFileIds]);
 
-  // Aggregated data from all selected files
-  const data = useMemo(() => {
-    if (selectedFiles.length === 0) return [];
-    return selectedFiles.reduce((acc, file) => {
+  // Memoized selector for data
+  const dataSelector = useMemo(() => {
+    if (selectedFilesSelector.length === 0) return [];
+    return selectedFilesSelector.reduce((acc, file) => {
       if (file.data && Array.isArray(file.data)) {
         return acc.concat(file.data);
       }
       return acc;
     }, []);
-  }, [selectedFiles]);
+  }, [selectedFilesSelector]);
 
-  const hasUploadedData = files.length > 0;
+  // Memoized selector for hasUploadedData
+  const hasUploadedDataSelector = useMemo(() => {
+    return files.length > 0;
+  }, [files]);
 
-  // Derive business types
-  const businessTypes = useMemo(() => {
-    if (!hasUploadedData || data.length === 0) return ['all'];
+  // Memoized selector for businessTypes
+  const businessTypesSelector = useMemo(() => {
+    if (!hasUploadedDataSelector || dataSelector.length === 0) return ['all'];
     const types = new Set();
-    data.forEach(item => {
+    dataSelector.forEach(item => {
       if (item['Business Type']) {
         types.add(item['Business Type']);
       }
     });
     return ['all', ...Array.from(types)];
-  }, [data, hasUploadedData]);
+  }, [dataSelector, hasUploadedDataSelector]);
 
-  // Handle updates when selected files change
+  // Update filter ranges whenever selectedFileIds or data changes
   useEffect(() => {
     if (selectedFileIds.length === 0) {
-      // No files selected, reset filters to defaults
       setFilters({
         revenue: [0, 0],
         profit: [0, 0],
@@ -110,30 +103,115 @@ export const DashboardProvider = ({ children }) => {
     }
 
     setIsLoadingData(true);
-    // Simulate async update if needed. Here we just update immediately.
     Promise.resolve().then(() => {
-      updateFilterRanges(data);
+      updateFilterRanges(dataSelector);
       setIsLoadingData(false);
     });
-  }, [selectedFileIds, data, updateFilterRanges]);
+  }, [selectedFileIds, dataSelector, updateFilterRanges]);
+
+  // Derived filtered data
+  const filteredDataSelector = useMemo(() => {
+    if (dataSelector.length === 0) return [];
+    const f = filters;
+    return dataSelector.filter(item =>
+      (!f.revenue || (item['TTM Revenue'] >= f.revenue[0] && item['TTM Revenue'] <= f.revenue[1])) &&
+      (!f.profit || (item['TTM Profit'] >= f.profit[0] && item['TTM Profit'] <= f.profit[1])) &&
+      (!f.price || (item['Asking Price'] >= f.price[0] && item['Asking Price'] <= f.price[1])) &&
+      (!f.businessType || f.businessType === 'all' || item['Business Type'] === f.businessType)
+    );
+  }, [dataSelector, filters]);
+
+  // Function to remove a listing from data/files
+  const removeListingFromData = useCallback((id) => {
+    setFilesState(prevFiles => {
+      return prevFiles.map(file => {
+        if (!file.data) return file;
+        const newData = file.data.filter(item => item.id !== id);
+        if (newData.length === file.data.length) {
+          // No change
+          return file;
+        }
+        return { ...file, data: newData };
+      });
+    });
+  }, []);
+
+  // Safe setter to ensure unique IDs and array format (appends files)
+  const safeSetFiles = useCallback((newFiles) => {
+    // Normalize newFiles to always be an array
+    const normalizedFiles = Array.isArray(newFiles) ? newFiles : [newFiles].filter(Boolean);
+
+    setFilesState((prevFiles) => {
+      // Create a map of existing file names to prevent duplicates
+      const existingFileNames = new Set(prevFiles.map(f => f.name));
+      
+      // Filter out any files that already exist by name
+      const uniqueNewFiles = normalizedFiles.filter(file => !existingFileNames.has(file.name));
+
+      // Process and append only unique files
+      return [
+        ...prevFiles,
+        ...uniqueNewFiles.map(file => {
+          if (!file || !file.data) return file;
+
+          const normalizedData = Array.isArray(file.data) ? file.data : [];
+
+          return {
+            ...file,
+            data: normalizedData.map(item => {
+              return { ...item, id: item.id ?? uuidv4() };
+            })
+          };
+        })
+      ];
+    });
+  }, []);
+
+  // NEW FUNCTION ADDED:
+  // This function replaces the entire files array without just appending
+  const replaceFiles = useCallback((newFiles) => {
+    setFilesState(() => {
+      return newFiles.map(file => {
+        if (!file || !file.data) return file;
+
+        const normalizedData = Array.isArray(file.data) ? file.data : [];
+
+        return {
+          ...file,
+          data: normalizedData.map(item => {
+            return { ...item, id: item.id ?? uuidv4() };
+          })
+        };
+      });
+    });
+  }, []);
+
+  // Create stable references for getters
+  const getHasUploadedData = useCallback(() => hasUploadedDataSelector, [hasUploadedDataSelector]);
+  const getData = useCallback(() => dataSelector, [dataSelector]);
+  const getBusinessTypes = useCallback(() => businessTypesSelector, [businessTypesSelector]);
+  const getFilteredData = useCallback(() => filteredDataSelector, [filteredDataSelector]);
+
+  const value = {
+    files,
+    setFiles: safeSetFiles, // Appending behavior
+    replaceFiles,           // Replacing behavior (newly added)
+    selectedFileIds,
+    setSelectedFileIds,
+    filters,
+    setFilters,
+    filterRanges,
+    updateFilterRanges,
+    isLoadingData,
+    removeListingFromData,
+    getHasUploadedData,
+    getData,
+    getBusinessTypes,
+    getFilteredData,
+  };
 
   return (
-    <DashboardContext.Provider
-      value={{
-        files,
-        setFiles,
-        selectedFileIds,
-        setSelectedFileIds,
-        data,
-        filters,
-        setFilters,
-        filterRanges,
-        updateFilterRanges,
-        hasUploadedData,
-        businessTypes,
-        isLoadingData
-      }}
-    >
+    <DashboardContext.Provider value={value}>
       {children}
     </DashboardContext.Provider>
   );

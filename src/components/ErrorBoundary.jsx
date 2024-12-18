@@ -30,7 +30,7 @@ class ErrorBoundary extends React.Component {
           <h2 className="text-lg font-semibold mb-2">Something went wrong</h2>
           <p className="mb-4">We're sorry, but an error occurred. Please try refreshing the page or contact support if the problem persists.</p>
           {process.env.NODE_ENV === 'development' && (
-            <details className="whitespace-pre-wrap">
+            <details className="whitespace-pre-wrap text-neutral-dark">
               {this.state.error && this.state.error.toString()}
               <br />
               {this.state.errorInfo && this.state.errorInfo.componentStack}

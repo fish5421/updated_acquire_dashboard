@@ -6,19 +6,24 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(value: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(value);
+  if (isNaN(value)) return 'N/A';
+  return Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
 }
 
 export function calculateFinancialRatio(numerator: number, denominator: number): string {
-  if (denominator === 0 || numerator === 0 || !isFinite(numerator / denominator)) {
+  const num = Number(numerator);
+  const den = Number(denominator);
+
+  if (den === 0 || isNaN(den) || !isFinite(den)) {
     return 'N/A';
   }
-  return (numerator / denominator).toFixed(2) + 'x';
+
+  const ratio = num / den;
+  if (isNaN(ratio) || !isFinite(ratio)) {
+    return 'N/A';
+  }
+
+  return ratio.toFixed(2) + 'x';
 }
 
 export function calculateFinancialRatioAsNumber(numerator: number | string, denominator: number | string): number | null {

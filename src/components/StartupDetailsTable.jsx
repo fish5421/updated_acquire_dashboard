@@ -1,33 +1,25 @@
-import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
+import React, { useState, useContext, useMemo, useCallback, useEffect } from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import { DashboardContext } from '@/context/DashboardContext';
-import { calculateFinancialRatioAsNumber } from "@/lib/utils";
 import TableHeader from './TableHeader';
 import VirtualRow from './VirtualRow';
 import Pagination from './Pagination';
+import { calculateFinancialRatioAsNumber } from "@/lib/utils";
 
-const ROW_HEIGHT = 48;
+const StartupDetailsTable = ({ onSort, sortConfig, onToggleCompare, selectedComparisons }) => {
+  const { getFilteredData, removeListingFromData } = useContext(DashboardContext);
 
-const StartupDetailsTable = ({ onSort, sortConfig }) => {
-  const { data, filters, removeListingFromData } = useContext(DashboardContext);
+  const filteredData = useMemo(() => getFilteredData(), [getFilteredData]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-  
-  const filteredData = useMemo(() => {
-    return data.filter(item =>
-      (!filters.revenue || (item['TTM Revenue'] >= filters.revenue[0] && item['TTM Revenue'] <= filters.revenue[1])) &&
-      (!filters.profit || (item['TTM Profit'] >= filters.profit[0] && item['TTM Profit'] <= filters.profit[1])) &&
-      (!filters.price || (item['Asking Price'] >= filters.price[0] && item['Asking Price'] <= filters.price[1])) &&
-      (!filters.businessType || filters.businessType === 'all' || item['Business Type'] === filters.businessType)
-    );
-  }, [data, filters]);
 
   const sortedData = useMemo(() => {
     let sortableItems = [...filteredData];
-    if (sortConfig.key !== null) {
+    if (sortConfig.key !== null && sortConfig.key !== '') {
       sortableItems.sort((a, b) => {
         let aValue, bValue;
 
@@ -37,13 +29,15 @@ const StartupDetailsTable = ({ onSort, sortConfig }) => {
         } else if (sortConfig.key === 'price-to-profit') {
           aValue = calculateFinancialRatioAsNumber(a['Asking Price'], a['TTM Profit']);
           bValue = calculateFinancialRatioAsNumber(b['Asking Price'], b['TTM Profit']);
-        } else {
+        } else if (sortConfig.key && a[sortConfig.key] !== undefined && b[sortConfig.key] !== undefined) {
           aValue = typeof a[sortConfig.key] === 'string' && !isNaN(a[sortConfig.key].replace(/[^0-9.-]+/g, ""))
             ? parseFloat(a[sortConfig.key].replace(/[^0-9.-]+/g, ""))
             : a[sortConfig.key];
           bValue = typeof b[sortConfig.key] === 'string' && !isNaN(b[sortConfig.key].replace(/[^0-9.-]+/g, ""))
             ? parseFloat(b[sortConfig.key].replace(/[^0-9.-]+/g, ""))
             : b[sortConfig.key];
+        } else {
+          return 0;
         }
 
         if (aValue === null || aValue === 0) return sortConfig.direction === 'ascending' ? 1 : -1;
@@ -55,7 +49,6 @@ const StartupDetailsTable = ({ onSort, sortConfig }) => {
     return sortableItems;
   }, [filteredData, sortConfig]);
 
-  // Calculate the current page's data
   const currentPageData = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
@@ -68,16 +61,13 @@ const StartupDetailsTable = ({ onSort, sortConfig }) => {
 
   const handlePageSizeChange = useCallback((newSize) => {
     setPageSize(newSize);
-    setCurrentPage(1); // Reset to first page when changing page size
+    setCurrentPage(1);
   }, []);
 
   const handleRemove = useCallback((id) => {
-    setTimeout(() => {
-      removeListingFromData(id);
-    }, 300);
+    removeListingFromData(id);
   }, [removeListingFromData]);
 
-  // Reset to first page when filtered data changes
   useEffect(() => {
     setCurrentPage(1);
   }, [filteredData.length]);
@@ -93,10 +83,10 @@ const StartupDetailsTable = ({ onSort, sortConfig }) => {
   }, [currentPageData.length]);
 
   return (
-    <div className="h-[600px] relative">
-      <TableHeader sortConfig={sortConfig} onSort={onSort} />
+    <div className="h-[600px] relative text-neutral-dark">
+      <TableHeader sortConfig={sortConfig} onSort={onSort} compareCount={selectedComparisons.length} />
 
-      <div className="h-[500px]">
+      <div className="h-[500px] bg-white">
         <AutoSizer>
           {({ height, width }) => (
             <InfiniteLoader
@@ -110,9 +100,10 @@ const StartupDetailsTable = ({ onSort, sortConfig }) => {
                   ref={ref}
                   height={height}
                   itemCount={currentPageData.length}
-                  itemSize={ROW_HEIGHT}
+                  itemSize={48}
                   width={width}
                   onItemsRendered={onItemsRendered}
+                  itemKey={(index) => currentPageData[index].id}
                 >
                   {({ index, style }) => (
                     <VirtualRow
@@ -120,6 +111,8 @@ const StartupDetailsTable = ({ onSort, sortConfig }) => {
                       style={style}
                       data={currentPageData}
                       onRemove={handleRemove}
+                      onToggleCompare={onToggleCompare}
+                      selectedComparisons={selectedComparisons}
                     />
                   )}
                 </List>

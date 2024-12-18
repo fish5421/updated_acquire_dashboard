@@ -13,7 +13,10 @@ const Filter = () => {
   const [activeTooltip, setActiveTooltip] = useState(null);
   const [activeFilters, setActiveFilters] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const { filters, setFilters, filterRanges, hasUploadedData, businessTypes } = useContext(DashboardContext);
+  const { filters, setFilters, filterRanges, getHasUploadedData, getBusinessTypes } = useContext(DashboardContext);
+
+  const hasUploadedData = useMemo(() => getHasUploadedData(), [getHasUploadedData]);
+  const businessTypes = useMemo(() => getBusinessTypes(), [getBusinessTypes]);
 
   const debouncedSetFilters = useDebounce(setFilters, 300);
 
@@ -64,41 +67,40 @@ const Filter = () => {
 
   if (!hasUploadedData) {
     return (
-      <Card>
+      <Card className="bg-white border border-neutral-light">
         <CardHeader>
-          <CardTitle>Filters</CardTitle>
+          <CardTitle className="text-neutral-dark">Filters</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center h-64">
-            <h3 className="text-xl font-semibold mb-2">No Data to Display</h3>
-            <p className="text-gray-600 mb-4">Upload data from the File Management page to see available filters.</p>
+            <h3 className="text-xl font-semibold mb-2 text-neutral-dark">No Data to Display</h3>
+            <p className="text-neutral-light mb-4">Upload data from the File Management page to see available filters.</p>
           </div>
         </CardContent>
       </Card>
     );
   }
 
-  // Count how many filters are active
   const activeFilterCount = Object.keys(activeFilters).length;
 
   return (
-    <Card>
+    <Card className="bg-white border border-neutral-light">
       <CardHeader>
         <div className="flex justify-between items-center w-full">
           <div className="flex flex-col space-y-1">
-            <CardTitle className="flex items-center space-x-2">
+            <CardTitle className="flex items-center space-x-2 text-neutral-dark">
               <span>Filters</span>
               {activeFilterCount > 0 && (
-                <span className="text-sm text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+                <span className="text-sm text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                   {activeFilterCount} active {activeFilterCount === 1 ? 'filter' : 'filters'}
                 </span>
               )}
               {activeFilterCount === 0 && (
-                <span className="text-sm text-gray-500">No active filters</span>
+                <span className="text-sm text-neutral-light">No active filters</span>
               )}
             </CardTitle>
           </div>
-          <Button onClick={resetAllFilters} variant="outline" size="sm">
+          <Button onClick={resetAllFilters} variant="outline" size="sm" className="border-neutral-light text-neutral-dark hover:bg-tertiary/30">
             Reset All Filters
           </Button>
         </div>
@@ -110,20 +112,20 @@ const Filter = () => {
             {/* Revenue Filter */}
             <div className="space-y-2">
               <div className="h-8 flex items-center justify-between">
-                <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
+                <h3 className="text-sm font-medium text-neutral-dark flex items-center flex-1">
                   <span className="flex-grow capitalize flex items-center space-x-1">
                     <span>Revenue</span>
-                    {activeFilters.revenue && <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>}
+                    {activeFilters.revenue && <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>}
                   </span>
-                  <Tooltip content="Adjust this slider to display startups within a certain revenue range. You can drag the handles, type exact values, or use preset ranges.">
-                    <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
+                  <Tooltip content="Adjust this slider to display startups within a certain revenue range.">
+                    <HelpCircle className="w-4 h-4 text-neutral-light cursor-help ml-2" />
                   </Tooltip>
                   <div className="w-8 h-8 flex items-center justify-center">
                     {activeFilters.revenue && (
                       <Button
                         variant="outline"
                         size="sm"
-                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
+                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600 border-neutral-light"
                         onClick={() => handleResetFilter('revenue')}
                       >
                         <X className="h-4 w-4" />
@@ -151,20 +153,20 @@ const Filter = () => {
             {/* Profit Filter */}
             <div className="space-y-2">
               <div className="h-8 flex items-center justify-between">
-                <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
+                <h3 className="text-sm font-medium text-neutral-dark flex items-center flex-1">
                   <span className="flex-grow capitalize flex items-center space-x-1">
                     <span>Profit</span>
-                    {activeFilters.profit && <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>}
+                    {activeFilters.profit && <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>}
                   </span>
-                  <Tooltip content="Filter startups by profit range. Narrow down the displayed results by setting minimum and maximum profit values, or select a preset range.">
-                    <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
+                  <Tooltip content="Filter startups by profit range.">
+                    <HelpCircle className="w-4 h-4 text-neutral-light cursor-help ml-2" />
                   </Tooltip>
                   <div className="w-8 h-8 flex items-center justify-center">
                     {activeFilters.profit && (
                       <Button
                         variant="outline"
                         size="sm"
-                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
+                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600 border-neutral-light"
                         onClick={() => handleResetFilter('profit')}
                       >
                         <X className="h-4 w-4" />
@@ -192,20 +194,20 @@ const Filter = () => {
             {/* Price Filter */}
             <div className="space-y-2">
               <div className="h-8 flex items-center justify-between">
-                <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
+                <h3 className="text-sm font-medium text-neutral-dark flex items-center flex-1">
                   <span className="flex-grow capitalize flex items-center space-x-1">
                     <span>Price</span>
-                    {activeFilters.price && <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>}
+                    {activeFilters.price && <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>}
                   </span>
-                  <Tooltip content="Set the asking price range for startups. Use the slider, enter exact values, or pick a preset to quickly filter the displayed startups.">
-                    <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
+                  <Tooltip content="Set the asking price range for startups.">
+                    <HelpCircle className="w-4 h-4 text-neutral-light cursor-help ml-2" />
                   </Tooltip>
                   <div className="w-8 h-8 flex items-center justify-center">
                     {activeFilters.price && (
                       <Button
                         variant="outline"
                         size="sm"
-                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
+                        className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600 border-neutral-light"
                         onClick={() => handleResetFilter('price')}
                       >
                         <X className="h-4 w-4" />
@@ -232,20 +234,20 @@ const Filter = () => {
           </div>
           <div className="space-y-2">
             <div className="h-8 flex items-center justify-between">
-              <h3 className="text-sm font-medium text-gray-700 flex items-center flex-1">
+              <h3 className="text-sm font-medium text-neutral-dark flex items-center flex-1">
                 <span className="flex-grow flex items-center space-x-1">
                   <span>Business Type</span>
-                  {activeFilters.businessType && <span className="inline-block w-2 h-2 rounded-full bg-blue-500"></span>}
+                  {activeFilters.businessType && <span className="inline-block w-2 h-2 rounded-full bg-primary"></span>}
                 </span>
-                <Tooltip content="Filter startups by their business type. Select 'All' or choose a specific category to narrow your results.">
-                  <HelpCircle className="w-4 h-4 text-gray-400 cursor-help ml-2" />
+                <Tooltip content="Filter startups by their business type.">
+                  <HelpCircle className="w-4 h-4 text-neutral-light cursor-help ml-2" />
                 </Tooltip>
                 <div className="w-8 h-8 flex items-center justify-center">
                   {activeFilters.businessType && (
                     <Button
                       variant="outline"
                       size="sm"
-                      className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600"
+                      className="px-1 py-0 bg-red-100 hover:bg-red-200 text-red-600 border-neutral-light"
                       onClick={() => handleResetFilter('businessType')}
                     >
                       <X className="h-4 w-4" />
@@ -262,7 +264,7 @@ const Filter = () => {
                   value={filters.businessType}
                   onValueChange={(value) => handleFilterChange('businessType', value)}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full border-neutral-light text-neutral-dark">
                     <SelectValue placeholder="Select a business type" />
                   </SelectTrigger>
                   <SelectContent>

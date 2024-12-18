@@ -1,33 +1,85 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { Trash2, ExternalLink } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { formatCurrency, calculateFinancialRatio } from "@/lib/utils";
 
-const VirtualRow = React.memo(({ index, style, data, onRemove }) => {
+const VirtualRow = React.memo(({ index, style, data, onRemove, onToggleCompare, selectedComparisons }) => {
   const item = data[index];
   if (!item) return null;
 
+  const [isRemoving, setIsRemoving] = useState(false);
+
+  const isSelected = selectedComparisons.some(b => b.id === item.id);
+
+  const handleCheckboxChange = (e) => {
+    e.stopPropagation();
+    const checked = e.target.checked;
+    onToggleCompare(item, checked);
+  };
+
+  const handleRemoveClick = (e) => {
+    e.stopPropagation();
+    // Indicate that removal is happening immediately
+    setIsRemoving(true);
+  };
+
+  const handleTransitionEnd = useCallback(() => {
+    if (isRemoving) {
+      // Once the transition ends, actually remove the item from the data set
+      onRemove(item.id);
+    }
+  }, [isRemoving, onRemove, item.id]);
+
   return (
-    <div style={style} className={`flex ${index % 2 === 0 ? 'bg-gray-50' : ''}`}>
-      <div className="flex-1 px-4 py-2">{item['Business Type']}</div>
-      <div className="flex-1 px-4 py-2 text-right">{formatCurrency(item['TTM Revenue'])}</div>
-      <div className="flex-1 px-4 py-2 text-right">{formatCurrency(item['TTM Profit'])}</div>
-      <div className="flex-1 px-4 py-2 text-right">{formatCurrency(item['Asking Price'])}</div>
-      <div className="flex-1 px-4 py-2 text-right">
+    <div
+      style={style}
+      onTransitionEnd={handleTransitionEnd}
+      className={`flex items-center 
+        ${index % 2 === 0 ? 'bg-tertiary/20' : 'bg-white'} 
+        ${isSelected ? 'border-l-4 border-primary bg-primary/10' : ''} 
+        ${isRemoving ? 'opacity-0 transition-opacity duration-300' : 'transition-opacity duration-300 opacity-100'}
+      `}
+    >
+      {/* Existing logic and structure retained */}
+      <div className="flex-1 px-4 py-2 text-neutral-dark">{item['Business Type']}</div>
+      <div className="flex-1 px-4 py-2 text-right text-neutral-dark">{formatCurrency(item['TTM Revenue'])}</div>
+      <div className="flex-1 px-4 py-2 text-right text-neutral-dark">{formatCurrency(item['TTM Profit'])}</div>
+      <div className="flex-1 px-4 py-2 text-right text-neutral-dark">{formatCurrency(item['Asking Price'])}</div>
+      <div className="flex-1 px-4 py-2 text-right text-neutral-dark">
         {calculateFinancialRatio(item['Asking Price'], item['TTM Revenue'])}
       </div>
-      <div className="flex-1 px-4 py-2 text-right">
+      <div className="flex-1 px-4 py-2 text-right text-neutral-dark">
         {calculateFinancialRatio(item['Asking Price'], item['TTM Profit'])}
       </div>
       <div className="flex-1 px-4 py-2">
         <a href={item['marketplace-card href']} target="_blank" rel="noopener noreferrer">
-          <ExternalLink className="h-4 w-4" />
+          <ExternalLink className="h-4 w-4 text-neutral-light" />
         </a>
       </div>
+
       <div className="flex-1 px-4 py-2">
-        <Button variant="ghost" size="sm" onClick={() => onRemove(item.id)}>
-          <Trash2 className="h-4 w-4" />
+        {/* Button click now triggers immediate visual feedback */}
+        <Button variant="ghost" size="sm" onClick={handleRemoveClick}>
+          <Trash2 className="h-4 w-4 text-neutral-light" />
         </Button>
+      </div>
+
+      <div
+        className="flex-1 px-4 py-2 flex items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <label
+          className="relative inline-block cursor-pointer p-2"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={handleCheckboxChange}
+            className="w-4 h-4 cursor-pointer border-neutral-light rounded text-primary focus:ring-primary"
+            aria-label="Select this business for comparison"
+          />
+        </label>
       </div>
     </div>
   );
