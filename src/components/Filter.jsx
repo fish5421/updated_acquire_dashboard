@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { HelpCircle, X } from 'lucide-react';
 import { Tooltip } from "@/components/ui/tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
 import RangeFilter from './RangeFilter';
 import { DashboardContext } from '../context/DashboardContext';
 import { useDebounce } from '../hooks/useDebounce';
@@ -12,7 +11,6 @@ import { useDebounce } from '../hooks/useDebounce';
 const Filter = () => {
   const [activeTooltip, setActiveTooltip] = useState(null);
   const [activeFilters, setActiveFilters] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
   const { filters, setFilters, filterRanges, getHasUploadedData, getBusinessTypes } = useContext(DashboardContext);
 
   const hasUploadedData = useMemo(() => getHasUploadedData(), [getHasUploadedData]);
@@ -33,11 +31,10 @@ const Filter = () => {
   }, [filters, filterRanges]);
 
   const handleFilterChange = (key, newValue) => {
-    setIsLoading(true);
-    debouncedSetFilters(prevFilters => {
-      setIsLoading(false);
-      return { ...prevFilters, [key]: newValue };
-    });
+    debouncedSetFilters(prevFilters => ({
+      ...prevFilters,
+      [key]: newValue
+    }));
   };
 
   const handleResetFilter = (key) => {
@@ -108,7 +105,6 @@ const Filter = () => {
       <CardContent>
         <div className="space-y-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
             {/* Revenue Filter */}
             <div className="space-y-2">
               <div className="h-8 flex items-center justify-between">
@@ -135,18 +131,14 @@ const Filter = () => {
                 </h3>
               </div>
               <div className="min-h-[180px]">
-                {isLoading ? (
-                  <Skeleton className="h-[180px]" />
-                ) : (
-                  <RangeFilter
-                    label="Revenue Range"
-                    min={filterRanges.revenue[0]}
-                    max={filterRanges.revenue[1]}
-                    value={filters.revenue}
-                    onChange={(value) => handleFilterChange('revenue', value)}
-                    presets={generatePresets('revenue')}
-                  />
-                )}
+                <RangeFilter
+                  label="Revenue Range"
+                  min={filterRanges.revenue[0]}
+                  max={filterRanges.revenue[1]}
+                  value={filters.revenue}
+                  onChange={(value) => handleFilterChange('revenue', value)}
+                  presets={generatePresets('revenue')}
+                />
               </div>
             </div>
 
@@ -176,18 +168,14 @@ const Filter = () => {
                 </h3>
               </div>
               <div className="min-h-[180px]">
-                {isLoading ? (
-                  <Skeleton className="h-[180px]" />
-                ) : (
-                  <RangeFilter
-                    label="Profit Range"
-                    min={filterRanges.profit[0]}
-                    max={filterRanges.profit[1]}
-                    value={filters.profit}
-                    onChange={(value) => handleFilterChange('profit', value)}
-                    presets={generatePresets('profit')}
-                  />
-                )}
+                <RangeFilter
+                  label="Profit Range"
+                  min={filterRanges.profit[0]}
+                  max={filterRanges.profit[1]}
+                  value={filters.profit}
+                  onChange={(value) => handleFilterChange('profit', value)}
+                  presets={generatePresets('profit')}
+                />
               </div>
             </div>
 
@@ -217,21 +205,19 @@ const Filter = () => {
                 </h3>
               </div>
               <div className="min-h-[180px]">
-                {isLoading ? (
-                  <Skeleton className="h-[180px]" />
-                ) : (
-                  <RangeFilter
-                    label="Price Range"
-                    min={filterRanges.price[0]}
-                    max={filterRanges.price[1]}
-                    value={filters.price}
-                    onChange={(value) => handleFilterChange('price', value)}
-                    presets={generatePresets('price')}
-                  />
-                )}
+                <RangeFilter
+                  label="Price Range"
+                  min={filterRanges.price[0]}
+                  max={filterRanges.price[1]}
+                  value={filters.price}
+                  onChange={(value) => handleFilterChange('price', value)}
+                  presets={generatePresets('price')}
+                />
               </div>
             </div>
           </div>
+
+          {/* Business Type Filter */}
           <div className="space-y-2">
             <div className="h-8 flex items-center justify-between">
               <h3 className="text-sm font-medium text-neutral-dark flex items-center flex-1">
@@ -257,25 +243,21 @@ const Filter = () => {
               </h3>
             </div>
             <div className="min-h-[40px]">
-              {isLoading ? (
-                <Skeleton className="h-10" />
-              ) : (
-                <Select
-                  value={filters.businessType}
-                  onValueChange={(value) => handleFilterChange('businessType', value)}
-                >
-                  <SelectTrigger className="w-full border-neutral-light text-neutral-dark">
-                    <SelectValue placeholder="Select a business type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {businessTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type === 'all' ? 'All' : type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+              <Select
+                value={filters.businessType}
+                onValueChange={(value) => handleFilterChange('businessType', value)}
+              >
+                <SelectTrigger className="w-full border-neutral-light text-neutral-dark">
+                  <SelectValue placeholder="Select a business type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {businessTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type === 'all' ? 'All' : type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>

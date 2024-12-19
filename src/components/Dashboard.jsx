@@ -11,9 +11,10 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { formatRatio } from "@/lib/utils";
 
 const Dashboard = ({ isLoading }) => {
-  const { getData, getHasUploadedData, isLoadingData, selectedFileIds } = useContext(DashboardContext);
+  const { getFilteredData, getHasUploadedData, isLoadingData, selectedFileIds } = useContext(DashboardContext);
 
-  const data = useMemo(() => getData(), [getData]);
+  // Use filtered data instead of all data
+  const filteredData = useMemo(() => getFilteredData(), [getFilteredData]);
   const hasUploadedData = useMemo(() => getHasUploadedData(), [getHasUploadedData]);
 
   const [showFilter, setShowFilter] = useState(false);
@@ -51,7 +52,7 @@ const Dashboard = ({ isLoading }) => {
   }, []);
 
   const averageMetrics = useMemo(() => {
-    if (!hasUploadedData || data.length === 0) {
+    if (!hasUploadedData || filteredData.length === 0) {
       return {
         avgRevenue: 0,
         avgProfit: 0,
@@ -61,14 +62,14 @@ const Dashboard = ({ isLoading }) => {
       };
     }
 
-    const sum = data.reduce((acc, item) => {
+    const sum = filteredData.reduce((acc, item) => {
       acc.revenue += Number(item['TTM Revenue']) || 0;
       acc.profit += Number(item['TTM Profit']) || 0;
       acc.price += Number(item['Asking Price']) || 0;
       return acc;
     }, { revenue: 0, profit: 0, price: 0 });
 
-    const count = data.length;
+    const count = filteredData.length;
     const avgRevenue = sum.revenue / count;
     const avgProfit = sum.profit / count;
     const avgPrice = sum.price / count;
@@ -82,7 +83,7 @@ const Dashboard = ({ isLoading }) => {
       avgPriceToRevenue: formatRatio(avgPriceToRevenue),
       avgPriceToProfit: formatRatio(avgPriceToProfit),
     };
-  }, [data, hasUploadedData]);
+  }, [filteredData, hasUploadedData]);
 
   const handleSort = useCallback((key) => {
     setSortConfig(prev => ({
@@ -171,7 +172,7 @@ const Dashboard = ({ isLoading }) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {data.length === 0 ? (
+              {filteredData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-64">
                   <h3 className="text-xl font-semibold mb-2 text-neutral-dark">No Data to Display</h3>
                   <p className="text-neutral-light mb-4">Select files to see the Revenue vs Price chart.</p>
@@ -192,7 +193,7 @@ const Dashboard = ({ isLoading }) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {data.length === 0 ? (
+              {filteredData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-64">
                   <h3 className="text-xl font-semibold mb-2 text-neutral-dark">No Data to Display</h3>
                   <p className="text-neutral-light mb-4">Select files to see the Profit vs Price chart.</p>
@@ -214,7 +215,7 @@ const Dashboard = ({ isLoading }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {data.length === 0 ? (
+            {filteredData.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-64">
                 <h3 className="text-xl font-semibold mb-2 text-neutral-dark">No Startup Data Available</h3>
                 <p className="text-neutral-light mb-4">Select files to see detailed startup information.</p>

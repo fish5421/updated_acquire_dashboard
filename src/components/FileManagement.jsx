@@ -1,5 +1,6 @@
-import React, { useContext, useRef, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import React, { useContext, useRef, useCallback, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { DashboardContext } from '../context/DashboardContext';
 import MultiFileUpload from './MultiFileUpload';
 import FileList from './FileList';
@@ -9,27 +10,32 @@ const FileManagement = () => {
   const triggerUploadRef = useRef(null);
   const hasFiles = files.length > 0;
 
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const navigate = useNavigate();
+
   const handleUploadClick = () => {
     if (triggerUploadRef.current) {
       triggerUploadRef.current();
     }
   };
 
-  // The logic below is the same, we just adjust which array we use when selecting new file IDs
   const handleFilesUploaded = useCallback((uploadedFiles) => {
-    // Check for duplicates based on file names instead of IDs
+    const wasEmpty = files.length === 0;
     const existingNames = new Set(files.map(file => file.name));
     const filtered = uploadedFiles.filter(f => !existingNames.has(f.name));
     const newFiles = [...files, ...filtered];
     setFiles(newFiles);
 
-    // Automatically select newly uploaded *filtered* files so that dashboard updates
-    // Changed from uploadedFiles to filtered to avoid re-selecting previously uploaded files.
     setSelectedFileIds(prev => {
       const prevIds = new Set(prev);
       const newIds = filtered.map(f => f.id).filter(id => !prevIds.has(id));
       return [...prev, ...newIds];
     });
+
+    // Only trigger success message and redirect if this is the first upload (wasEmpty)
+    if (wasEmpty && filtered.length > 0) {
+      setUploadSuccess(true);
+    }
   }, [files, setFiles, setSelectedFileIds]);
 
   const handleToggleFileSelection = (fileId) => {
@@ -43,13 +49,19 @@ const FileManagement = () => {
   };
 
   const handleDeleteFile = (id) => {
-    // Instead of appending, we must now replace the files array to remove the file completely
     const updatedFiles = files.filter(f => f.id !== id);
     replaceFiles(updatedFiles);
-
-    // Also remove it from selected file IDs
     setSelectedFileIds(prev => prev.filter(fid => fid !== id));
   };
+
+  useEffect(() => {
+    if (uploadSuccess) {
+      const timer = setTimeout(() => {
+        navigate('/');
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [uploadSuccess, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white p-8">
@@ -104,6 +116,21 @@ const FileManagement = () => {
           </div>
         </div>
       )}
+
+      <AnimatePresence>
+        {uploadSuccess && (
+          <motion.div
+            key="upload-success"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5 }}
+            className="fixed top-10 left-1/2 transform -translate-x-1/2 bg-primary text-white py-2 px-4 rounded shadow-lg"
+          >
+            File uploaded successfully! Redirecting to dashboard...
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
